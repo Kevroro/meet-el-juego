@@ -20,32 +20,9 @@
 <body class="custom-bg font-sans">
     
     <!-- Pantalla de carga con logotipo -->
-<div id="splash-screen" class="fixed inset-0 flex items-center justify-center bg-white z-50">
-    <img id="splash-logo" src="logoblanco.png" alt="Logotipo" class="w-1/2 opacity-0 transition-opacity duration-1000">
-</div>
-
-document.addEventListener("DOMContentLoaded", () => {
-    const splashScreen = document.getElementById("splash-screen");
-    const splashLogo = document.getElementById("splash-logo");
-
-    // Fade-in del logo
-    setTimeout(() => {
-        splashLogo.classList.remove("opacity-0"); // Hace el logo visible
-        splashLogo.classList.add("opacity-100");
-    }, 100); // Breve pausa antes del fade-in
-
-    // Fade-out del logo después de 3 segundos
-    setTimeout(() => {
-        splashLogo.classList.remove("opacity-100"); // Desvanece el logo
-        splashLogo.classList.add("opacity-0");
-    }, 3000);
-
-    // Ocultar el splash-screen después del fade-out
-    setTimeout(() => {
-        splashScreen.classList.add("hidden"); // Tailwind lo oculta completamente
-    }, 4000);
-});
-
+    <div id="splash-screen" class="fixed inset-0 flex items-center justify-center bg-white z-50">
+        <img src="logo.png" alt="Logotipo" class="w-1/2">
+    </div>
 
     <!-- Pantalla de selección de jugadores -->
     <div id="player-setup" class="hidden fixed inset-0 flex flex-col justify-center items-center py-10 z-40">
