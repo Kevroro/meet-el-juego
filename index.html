@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meet</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        .custom-bg {
+            background-color: #5D3F9E; /* Color lila intenso */
+        }
+        .question-text {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.25rem;
+        }
+        .button-text {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+        }
+        .emoji {
+            font-size: 3rem;
+        }
+        .heart {
+            color: #FF0000;
+        }
+        .fire {
+            color: #FF5733;
+        }
+        .funny {
+            color: #f39c12;
+        }
+        .intense {
+            color: #3498db;
+        }
+        .question-box {
+            background: linear-gradient(145deg, #7F3DFF, #8E44AD);
+            box-shadow: 6px 6px 12px rgba(0, 0, 0, 0.15), -6px -6px 12px rgba(255, 255, 255, 0.1);
+        }
+        .button-box {
+            box-shadow: 6px 6px 15px rgba(0, 0, 0, 0.2), -6px -6px 15px rgba(255, 255, 255, 0.15);
+        }
+    </style>
+</head>
+<body class="custom-bg font-sans">
+
+    <!-- Contenedor principal -->
+    <div class="min-h-screen flex flex-col justify-center items-center py-10">
+        
+        <!-- Título del juego -->
+        <h1 class="text-white text-5xl mb-6 font-extrabold font-Pacifico">Meet</h1>
+
+        <!-- Pregunta aleatoria -->
+        <div class="question-box p-8 rounded-xl shadow-lg max-w-lg w-full text-center">
+            <div id="emoji" class="emoji mb-4">❓</div>
+            <p id="question" class="text-white text-2xl mb-6 question-text">¡Haz click en "Nueva Pregunta" para comenzar!</p>
+            <button id="newMeetBtn" class="bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-indigo-600 hover:to-purple-500 text-white py-4 px-12 rounded-xl font-medium button-text transition duration-300 ease-in-out transform hover:scale-105 button-box">Nueva Pregunta</button>
+        </div>
+
+        <!-- Propiedad de Kevin y Judith -->
+        <footer class="mt-10 text-white text-sm">
+            <p>Propiedad de Kevin Roldán y Judith Sancerni</p>
+        </footer>
+    </div>
+
+    <script>
+        // Lista de preguntas con emojis de categoría
+        const questions = [
+            // Categoría Amor
+            { text: "¿Qué significa el amor para ti?", emoji: "❤️", category: "love" },
+            { text: "¿Crees en el amor a primera vista?", emoji: "❤️", category: "love" },
+            { text: "¿Quién fue tu primer amor?", emoji: "❤️", category: "love" },
+            
+            // Categoría Sexualidad
+            { text: "¿Qué harías si fueras invisible por un día?", emoji: "🔥", category: "sexual" },
+            { text: "¿Te consideras una persona extrovertida en la cama?", emoji: "🔥", category: "sexual" },
+            { text: "¿Qué parte de tu cuerpo te gusta más?", emoji: "🔥", category: "sexual" },
+
+            // Categoría Diversión
+            { text: "¿Qué harías si fueras rico?", emoji: "🤪", category: "funny" },
+            { text: "Si pudieras tener cualquier superpoder, ¿cuál escogerías?", emoji: "🤪", category: "funny" },
+            { text: "¿Qué harías si pudieras teletransportarte?", emoji: "🤪", category: "funny" },
+
+            // Categoría Profundidad/Intensidad
+            { text: "¿Cuál es tu mayor miedo?", emoji: "😔", category: "intense" },
+            { text: "¿Cómo te gustaría morir?", emoji: "😔", category: "intense" },
+            { text: "¿Cuál es el sentido de la vida para ti?", emoji: "😔", category: "intense" }
+        ];
+
+        // Función para obtener una pregunta aleatoria con emoji
+        function getRandomQuestion() {
+            const randomIndex = Math.floor(Math.random() * questions.length);
+            return questions[randomIndex];
+        }
+
+        // Función para actualizar la pregunta y emoji en la interfaz
+        document.getElementById("newMeetBtn").addEventListener("click", () => {
+            const { text, emoji, category } = getRandomQuestion();
+            document.getElementById("question").textContent = text;
+            document.getElementById("emoji").textContent = emoji;
+
+            // Cambiar el color del emoji según la categoría
+            if (category === "love") {
+                document.getElementById("emoji").className = "emoji heart";
+            } else if (category === "sexual") {
+                document.getElementById("emoji").className = "emoji fire";
+            } else if (category === "funny") {
+                document.getElementById("emoji").className = "emoji funny";
+            } else if (category === "intense") {
+                document.getElementById("emoji").className = "emoji intense";
+            }
+        });
+    </script>
+</body>
+</html>
