@@ -46,7 +46,7 @@
         <!-- Caja de preguntas -->
         <div class="question-box p-8 rounded-xl shadow-lg max-w-lg w-full text-center px-4 sm:px-6">
             <div id="emoji" class="emoji mb-4"></div>
-            <p id="question" class="text-white text-2xl mb-6">¡Haz click en "Déjate llevar" para comenzar!</p>
+            <p id="question" class="text-white text-2xl mb-6">¡Clica en «Déjate llevar» para comenzar la experiencia!</p>
             <button id="new-question" class="bg-purple-600 text-white py-2 px-6 rounded mb-4">Déjate llevar</button>
         </div>
         <div id="player-scores" class="mt-6 text-white w-full max-w-md px-4 sm:px-6">
@@ -146,7 +146,7 @@
             function addScore(index) {
                 players[index].score += 10;
                 if (players[index].score >= maxScore) {
-                    alert(`${players[index].name} ha tenido la mayor puntuación, pero todas habéis ganado 💜`);
+                    alert(`${players[index].name} ha obtenido la mayor puntuación, pero todas habéis ganado 💜`);
                     setTimeout(() => location.reload(), 3000);
                 }
                 updateScores();
