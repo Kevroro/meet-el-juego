@@ -146,7 +146,7 @@
             function addScore(index) {
                 players[index].score += 10;
                 if (players[index].score >= maxScore) {
-                    alert(`${players[index].name} ha ganado!`);
+                    alert(`${players[index].name} ha tenido la mayor puntuación, pero todas habéis ganado 💜`);
                     setTimeout(() => location.reload(), 3000);
                 }
                 updateScores();
