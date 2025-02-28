@@ -5,7 +5,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-title" content="Mi Juego">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <link rel="apple-touch-icon" href="favicon2.png">
+    <link rel="apple-touch-icon" href="icon-192x192.png">
     <link rel="icon" href="favicon.png" type="image/png">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -42,11 +42,11 @@
         <!-- Pantalla de juego -->
     <div id="game-screen" class="hidden fixed inset-0 flex flex-col justify-center items-center py-10 z-30">
         <!-- Logo encima de la pregunta -->
-        <img src="logoblanco.png" alt="Logotipo" class="w-24 mt-0 mb-2">
+        <img src="logoblanco.png" alt="Logotipo" class="w-24 mb-4">
         <!-- Caja de preguntas -->
         <div class="question-box p-8 rounded-xl shadow-lg max-w-lg w-full text-center px-4 sm:px-6">
             <div id="emoji" class="emoji mb-4"></div>
-            <p id="question" class="text-white text-2xl mb-6">¡Clica en "Déjate llevar" y comienza la experiencia!</p>
+            <p id="question" class="text-white text-2xl mb-6">¡Haz click en "Déjate llevar" para comenzar!</p>
             <button id="new-question" class="bg-purple-600 text-white py-2 px-6 rounded mb-4">Déjate llevar</button>
         </div>
         <div id="player-scores" class="mt-6 text-white w-full max-w-md px-4 sm:px-6">
@@ -146,7 +146,7 @@
             function addScore(index) {
                 players[index].score += 10;
                 if (players[index].score >= maxScore) {
-                    alert(`${players[index].name} ha tenido la mayor puntuación, pero todas habéis ganado 💜);
+                    alert(`${players[index].name} ha ganado!`);
                     setTimeout(() => location.reload(), 3000);
                 }
                 updateScores();
@@ -157,7 +157,7 @@
                     players[index].score -= 10;
                     updateScores();
                 } else {
-                    alert("¡Ojo! La puntuación no puede ser menor a 0");
+                    alert("El puntaje no puede ser menor a 0");
                 }
             }
 
@@ -428,10 +428,9 @@
     </script>
 
     <footer class="fixed bottom-4 w-full text-center">
-    <p class="text-white text-sm italic">
-        &copy; 2025 Propiedad de Kevin Roldán y Judith Sancerni
-    </p>
+        <p class="text-white text-sm">
+            &copy; 2025 Propiedad de Kevin Roldán y Judith Sancerni
+        </p>
     </footer>
-
 </body>
 </html>
