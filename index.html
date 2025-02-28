@@ -19,13 +19,13 @@
 </head>
 <body class="custom-bg font-sans">
     
-    <!-- Pantalla de carga con logotipo -->
-    <div id="splash-screen" class="fixed inset-0 flex items-center justify-center bg-white">
-        <img src="logo.png" alt="Logotipo" class="w-1/2">
-    </div>
-    
-    <!-- Pantalla de selección de jugadores -->
-    <div id="player-setup" class="min-h-screen flex flex-col justify-center items-center py-10">
+<!-- Pantalla de carga con logotipo -->
+<div id="splash-screen" class="fixed inset-0 flex items-center justify-center bg-white">
+    <img src="logo.png" alt="Logotipo" class="w-1/2">
+</div>
+
+<!-- Pantalla de selección de jugadores -->
+<div id="player-setup" class="min-h-screen flex flex-col justify-center items-center py-10">
     <h1 class="text-white text-3xl mb-6 font-extrabold text-center">¿Quiénes van a dejarse llevar?</h1>
     <div id="player-inputs" class="mb-4 flex flex-col items-center space-y-2">
         <!-- Las primeras dos cajitas -->
@@ -36,17 +36,46 @@
     <button id="add-player" class="bg-white-600 text-white py-2 px-4 rounded mb-4">+</button>
     <button id="start-game" class="bg-gradient-to-r from-[#0d1e75] to-[#9a18a4] text-white py-2 px-6 rounded">
         Empezar
-    </button>    
+    </button>
+</div>
+
+<!-- Pantalla de juego -->
+<div id="game-screen" class="hidden min-h-screen flex flex-col justify-center items-center py-10">
+    <!-- Logo encima de la pregunta -->
+    <img src="logoblanco.png" alt="Logotipo" class="w-24 mb-4">
+    <!-- Caja de preguntas -->
+    <div class="question-box p-8 rounded-xl shadow-lg max-w-lg w-full text-center px-4 sm:px-6">
+        <div id="emoji" class="emoji mb-4">❓</div>
+        <p id="question" class="text-white text-2xl mb-6">¡Haz click en "Déjate llevar" para comenzar!</p>
+        <button id="new-question" class="bg-purple-600 text-white py-2 px-6 rounded mb-4">Déjate llevar</button>
+    </div>
+    <div id="player-scores" class="mt-6 text-white w-full max-w-md px-4 sm:px-6">
+        <!-- Este contenedor será actualizado dinámicamente con JavaScript -->
+    </div>
 </div>
 
 <script>
+    // Manejador para la pantalla inicial y transición
     document.addEventListener("DOMContentLoaded", () => {
+        // Pantalla de carga
+        setTimeout(() => {
+            document.getElementById("splash-screen").classList.add("hidden");
+            document.getElementById("player-setup").classList.remove("hidden");
+        }, 3000); // 3 segundos de pantalla de carga
+
+        // Cambiar de pantalla: Selección de jugadores -> Pantalla de juego
+        document.getElementById("start-game").addEventListener("click", () => {
+            document.getElementById("player-setup").classList.add("hidden");
+            document.getElementById("game-screen").classList.remove("hidden");
+        });
+
+        // Añadir jugadores dinámicamente
         const playerInputsContainer = document.getElementById("player-inputs");
         const addPlayerButton = document.getElementById("add-player");
-        let playerCount = 2; // Ya tenemos dos cajitas iniciales
+        let playerCount = 2; // Dos jugadores iniciales
 
         addPlayerButton.addEventListener("click", () => {
-            if (playerCount < 12) { // Máximo 12 cajitas
+            if (playerCount < 12) { // Límite de 12 jugadores
                 playerCount++;
                 const newInput = document.createElement("input");
                 newInput.type = "text";
@@ -59,8 +88,6 @@
         });
     });
 </script>
-
-    
     <!-- Pantalla de juego -->
         <div id="game-screen" class="min-h-screen flex flex-col justify-center items-center py-10">
         <!-- Logo encima de la pregunta -->
