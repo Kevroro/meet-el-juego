@@ -11,13 +11,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Meet</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Caveat&family=Comfortaa:wght@300;400;500&display=swap" rel="stylesheet">
     <style>
         .custom-bg { background-color: #000000; }
         .question-box { background: linear-gradient(145deg, #0d1e75, #9a18a4); }
-    </style>
+        .font-caveat { font-family: 'Caveat', cursive; } /* Aplicar la nueva fuente para el título y preguntas */
+        .font-comfortaa { font-family: 'Comfortaa', sans-serif; } /* Aplicar la nueva fuente al resto del texto */
+    </style>    
 </head>
-<body class="custom-bg font-sans">
+<body class="custom-bg font-comfortaa">
     
     <!-- Pantalla de carga con logotipo -->
     <div id="splash-screen" class="fixed inset-0 flex items-center justify-center bg-white z-50">
@@ -26,7 +28,7 @@
 
     <!-- Pantalla de selección de jugadores -->
     <div id="player-setup" class="hidden fixed inset-0 flex flex-col justify-center items-center py-10 z-40">
-        <h1 class="text-white text-3xl mb-6 font-extrabold text-center">¿Quiénes van a dejarse llevar?</h1>
+        <h1 class="text-white text-3xl mb-6 font-extrabold text-center font-caveat">¿Quiénes van a dejarse llevar?</h1>
         <div id="player-inputs" class="mb-4 flex flex-col items-center space-y-2">
             <!-- Las primeras dos cajitas -->
             <input type="text" class="player-name bg-white px-4 py-2 rounded" placeholder="Nombre 1">
@@ -34,19 +36,55 @@
         </div>
         <!-- Botón para añadir más cajitas -->
         <button id="add-player" class="bg-white-600 text-white py-2 px-4 rounded mb-4">+</button>
+        <!-- Botón de instrucciones sutil -->
+        <a href="instrucciones.html" target="_blank" class="text-white text-sm mb-2 hover:text-blue-400">
+            Instrucciones del juego
+        </a>
         <button id="start-game" class="bg-gradient-to-r from-[#0d1e75] to-[#9a18a4] text-white py-2 px-6 rounded">
             Empezar
         </button>
     </div>
 
-        <!-- Pantalla de juego -->
+    <!-- Pantalla de selección de categorías -->
+    <div id="category-setup" class="hidden fixed inset-0 flex flex-col justify-center items-center py-10 z-30 bg-black bg-opacity-90">
+        <h1 class="text-white text-3xl mb-6 font-extrabold text-center">¿En qué mood estás hoy?</h1>
+        <div class="mb-6 space-y-4">
+            <!-- Opciones de categorías -->
+            <label class="flex items-center space-x-3">
+                <input type="checkbox" class="category-checkbox" value="love">
+                <span class="text-white text-lg">Amor ❤️</span>
+            </label>
+            <label class="flex items-center space-x-3">
+                <input type="checkbox" class="category-checkbox" value="sexual">
+                <span class="text-white text-lg">Sexual 🔥</span>
+            </label>
+            <label class="flex items-center space-x-3">
+                <input type="checkbox" class="category-checkbox" value="funny">
+                <span class="text-white text-lg">Divertida 🤪</span>
+            </label>
+            <label class="flex items-center space-x-3">
+                <input type="checkbox" class="category-checkbox" value="intense">
+                <span class="text-white text-lg">Intensa 🤯</span>
+            </label>
+            <!-- Opción para seleccionar todas -->
+            <label class="flex items-center space-x-3">
+                <input type="checkbox" id="select-all" value="all">
+                <span class="text-white text-lg">¡Vamos a por todas! 🎉</span>
+            </label>
+        </div>
+        <button id="apply-categories" class="bg-gradient-to-r from-[#0d1e75] to-[#9a18a4] text-white py-2 px-6 rounded">
+            Continuar
+        </button>
+    </div>
+
+    <!-- Pantalla de juego -->
     <div id="game-screen" class="hidden fixed inset-0 flex flex-col justify-center items-center py-10 z-30">
         <!-- Logo encima de la pregunta -->
         <img src="logoblanco.png" alt="Logotipo" class="w-24 mb-4">
         <!-- Caja de preguntas -->
         <div class="question-box p-8 rounded-xl shadow-lg max-w-lg w-full text-center px-4 sm:px-6">
             <div id="emoji" class="emoji mb-4"></div>
-            <p id="question" class="text-white text-2xl mb-6">¡Clica en «Déjate llevar» para comenzar la experiencia!</p>
+            <p id="question" class="text-white text-2xl mb-6 font-caveat">¡Clica en «Déjate llevar» para comenzar la experiencia!</p>
             <button id="new-question" class="bg-purple-600 text-white py-2 px-6 rounded mb-4">Déjate llevar</button>
         </div>
         <div id="player-scores" class="mt-6 text-white w-full max-w-md px-4 sm:px-6">
@@ -91,81 +129,58 @@
                 });
                 if (players.length > 0) {
                     document.getElementById("player-setup").classList.add("hidden");
-                    document.getElementById("game-screen").classList.remove("hidden");
-                    updateScores();
+                    document.getElementById("category-setup").classList.remove("hidden"); // Mostrar pantalla de categorías
                 }
             });
 
-            function updateScores() {
-                const scoresContainer = document.getElementById("player-scores");
-                scoresContainer.innerHTML = "";
-                players.forEach((player, index) => {
-                    const playerDiv = document.createElement("div");
-                    playerDiv.className = "mb-4";
-
-                    const playerInfo = document.createElement("div");
-                    playerInfo.className = "flex items-center justify-between mb-2";
-
-                    const playerName = document.createElement("p");
-                    playerName.textContent = `${player.name}: ${player.score} puntos`;
-                    playerName.className = "text-lg text-white";
-
-                    const buttonContainer = document.createElement("div");
-                    buttonContainer.className = "flex space-x-2";
-
-                    const addButton = document.createElement("button");
-                    addButton.innerHTML = "➕";
-                    addButton.className = "text-white text-xl px-2 py-1 rounded hover:text-green-400";
-                    addButton.onclick = () => addScore(index);
-
-                    const subtractButton = document.createElement("button");
-                    subtractButton.innerHTML = "➖";
-                    subtractButton.className = "text-white text-xl px-2 py-1 rounded hover:text-red-400";
-                    subtractButton.onclick = () => subtractScore(index);
-
-                    buttonContainer.appendChild(subtractButton);
-                    buttonContainer.appendChild(addButton);
-
-                    const progressBarContainer = document.createElement("div");
-                    progressBarContainer.className = "bg-gray-200 h-4 rounded-full overflow-hidden";
-
-                    const progressBar = document.createElement("div");
-                    progressBar.className = "bg-green-500 h-full";
-                    progressBar.style.width = `${(player.score / maxScore) * 100}%`;
-
-                    progressBarContainer.appendChild(progressBar);
-                    playerInfo.appendChild(playerName);
-                    playerInfo.appendChild(buttonContainer);
-                    playerDiv.appendChild(playerInfo);
-                    playerDiv.appendChild(progressBarContainer);
-
-                    scoresContainer.appendChild(playerDiv);
+            // Seleccionar todas las categorías con "¡Vamos a por todas!"
+            document.getElementById("select-all").addEventListener("change", (e) => {
+                const isChecked = e.target.checked;
+                document.querySelectorAll(".category-checkbox").forEach((checkbox) => {
+                    if (checkbox !== e.target) {
+                        checkbox.checked = isChecked;
+                    }
                 });
-            }
+            });
 
-            function addScore(index) {
-                players[index].score += 10;
-                if (players[index].score >= maxScore) {
-                    alert(`${players[index].name} ha obtenido la mayor puntuación, pero todas habéis ganado 💜`);
-                    setTimeout(() => location.reload(), 3000);
+            // Aplicar filtros y comenzar el juego
+            document.getElementById("apply-categories").addEventListener("click", () => {
+                const selectedCategories = Array.from(
+                    document.querySelectorAll(".category-checkbox:checked")
+                ).map((checkbox) => checkbox.value);
+
+                if (selectedCategories.length === 0) {
+                    alert("¡Por favor selecciona al menos una categoría!");
+                    return;
                 }
+
+                // Filtrar preguntas según las categorías seleccionadas
+                const filteredQuestions = questions.filter((q) =>
+                    selectedCategories.includes(q.category)
+                );
+
+                if (filteredQuestions.length === 0) {
+                    alert("¡No hay preguntas en las categorías seleccionadas!");
+                    return;
+                }
+
+                // Guardar preguntas filtradas para el juego
+                window.filteredQuestions = filteredQuestions;
+
+                // Ocultar la pantalla de categorías y mostrar la pantalla del juego
+                document.getElementById("category-setup").classList.add("hidden");
+                document.getElementById("game-screen").classList.remove("hidden");
+
+                usedQuestions.clear();
                 updateScores();
-            }
+            });
 
-            function subtractScore(index) {
-                if (players[index].score > 0) {
-                    players[index].score -= 10;
-                    updateScores();
-                } else {
-                    alert("¡Ojo! La puntuación no puede ser menor a 0");
-                }
-            }
-
+            // Mostrar nueva pregunta filtrada
             document.getElementById("new-question").addEventListener("click", () => {
-                let availableQuestions = questions.filter(q => !usedQuestions.has(q.text));
+                let availableQuestions = window.filteredQuestions.filter(q => !usedQuestions.has(q.text));
                 if (availableQuestions.length === 0) {
                     usedQuestions.clear();
-                    availableQuestions = questions;
+                    availableQuestions = window.filteredQuestions;
                 }
                 const randomQuestion = availableQuestions[Math.floor(Math.random() * availableQuestions.length)];
                 usedQuestions.add(randomQuestion.text);
@@ -424,13 +439,77 @@
             { text: "¿Si pudieras cambiar algo en el pasado, lo harías?", emoji: "🤯", category: "intense" },
             ];
             const usedQuestions = new Set();
-        });
-    </script>
+            Set();
 
-    <footer class="fixed bottom-4 w-full text-center">
-        <p class="text-white text-sm">
-            &copy; 2025 Propiedad de Kevin Roldán y Judith Sancerni
-        </p>
-    </footer>
-</body>
-</html>
+function updateScores() {
+    const scoresContainer = document.getElementById("player-scores");
+    scoresContainer.innerHTML = "";
+    players.forEach((player, index) => {
+        const playerDiv = document.createElement("div");
+        playerDiv.className = "mb-4";
+
+        const playerInfo = document.createElement("div");
+        playerInfo.className = "flex items-center justify-between mb-2";
+
+        const playerName = document.createElement("p");
+        playerName.textContent = `${player.name.toUpperCase()}: ${player.score} puntos`;
+        playerName.className = "text-lg text-white uppercase";
+
+        const buttonContainer = document.createElement("div");
+        buttonContainer.className = "flex space-x-2";
+
+        const addButton = document.createElement("button");
+        addButton.innerHTML = "➕";
+        addButton.className = "text-white text-xl px-2 py-1 rounded hover:text-green-400";
+        addButton.onclick = () => addScore(index);
+
+        const subtractButton = document.createElement("button");
+        subtractButton.innerHTML = "➖";
+        subtractButton.className = "text-white text-xl px-2 py-1 rounded hover:text-red-400";
+        subtractButton.onclick = () => subtractScore(index);
+
+        buttonContainer.appendChild(subtractButton);
+        buttonContainer.appendChild(addButton);
+
+        const progressBarContainer = document.createElement("div");
+        progressBarContainer.className = "bg-gray-200 h-4 rounded-full overflow-hidden";
+
+        const progressBar = document.createElement("div");
+        progressBar.className = "bg-green-500 h-full";
+        progressBar.style.width = `${(player.score / maxScore) * 100}%`;
+
+        progressBarContainer.appendChild(progressBar);
+        playerInfo.appendChild(playerName);
+        playerInfo.appendChild(buttonContainer);
+        playerDiv.appendChild(playerInfo);
+        playerDiv.appendChild(progressBarContainer);
+
+        scoresContainer.appendChild(playerDiv);
+    });
+}
+
+function addScore(index) {
+    players[index].score += 10;
+    if (players[index].score >= maxScore) {
+        alert(`${players[index].name} ha obtenido la mayor puntuación, pero todas habéis ganado 💜`);
+        setTimeout(() => location.reload(), 3000);
+    }
+    updateScores();
+}
+
+function subtractScore(index) {
+    if (players[index].score > 0) {
+        players[index].score -= 10;
+        updateScores();
+    } else {
+        alert("¡Ojo! La puntuación no puede ser menor a 0");
+    }
+}
+});
+</script>
+
+<footer class="fixed bottom-4 w-full text-center">
+<p class="text-white text-sm">
+&copy; 2025 Propiedad de Kevin Roldán y Judith Sancerni
+</p>
+</footer>
