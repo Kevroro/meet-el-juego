@@ -21,6 +21,9 @@
         flex-direction: column; 
         justify-content: center; 
         align-items: center;
+        border-radius: 0.75rem; /* Borde redondeado */
+        overflow: hidden; /* Asegurarse de que el contenido se ajuste dentro */
+        padding: 16px; /* Ajustar el padding según sea necesario */
     }
     .font-caveat { font-family: 'Caveat', cursive; }
     .font-comfortaa { font-family: 'Comfortaa', sans-serif; }
@@ -98,8 +101,8 @@
         <img src="logoblanco.png" alt="Logotipo" class="w-24 mb-4">
         <!-- Caja de preguntas -->
 
-<!-- Caja de preguntas con tamaño fijo y contenido centrado -->
-<div class="question-box shadow-lg max-w-lg w-full text-center">
+<!-- Caja de preguntas con tamaño fijo, contenido centrado y borde redondeado -->
+<div class="question-box p-8 rounded-xl shadow-lg max-w-lg w-full text-center">
     <div id="emoji" class="emoji mb-4"></div>
     <p id="question" class="text-white text-2xl mb-6 font-caveat">¡Clica en «Déjate llevar» para comenzar la experiencia!</p>
     <button id="new-question" class="bg-purple-600 text-white py-2 px-6 rounded mb-4">Déjate llevar</button>
