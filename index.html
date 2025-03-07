@@ -14,7 +14,15 @@
     <link href="https://fonts.googleapis.com/css2?family=Caveat&family=Comfortaa:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
     .custom-bg { background-color: #000000; }
-    .question-box { background: linear-gradient(145deg, #0d1e75, #9a18a4); }
+    .question-box { 
+        background: linear-gradient(145deg, #0d1e75, #9a18a4); 
+        height: 16rem; /* Ajusta este valor según lo necesites */
+        display: flex; 
+        flex-direction: column; 
+        justify-content: center; 
+        align-items: center;
+        padding: 16px; /* Ajustar el padding según sea necesario */
+    }
     .font-caveat { font-family: 'Caveat', cursive; }
     .font-comfortaa { font-family: 'Comfortaa', sans-serif; }
     h1 { font-family: 'Caveat', cursive; }
@@ -23,15 +31,6 @@
     body {
         -webkit-overflow-scrolling: touch;
         overflow: hidden;
-    }
-    
-    /* Definir la altura fija de la caja de preguntas y centrar el contenido */
-    .question-box {
-        height: 16rem; /* Ajustar este valor según lo necesites */
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
     }
 </style>
 
@@ -101,7 +100,7 @@
         <!-- Caja de preguntas -->
 
 <!-- Caja de preguntas con tamaño fijo y contenido centrado -->
-<div class="question-box p-8 rounded-xl shadow-lg max-w-lg w-full text-center px-4 sm:px-6">
+<div class="question-box shadow-lg max-w-lg w-full text-center">
     <div id="emoji" class="emoji mb-4"></div>
     <p id="question" class="text-white text-2xl mb-6 font-caveat">¡Clica en «Déjate llevar» para comenzar la experiencia!</p>
     <button id="new-question" class="bg-purple-600 text-white py-2 px-6 rounded mb-4">Déjate llevar</button>
