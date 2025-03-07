@@ -509,7 +509,12 @@ function subtractScore(index) {
 }
 });
 </script>
-
+<!-- Script para evitar el zoom al hacer doble clic -->
+<script>
+    document.addEventListener('dblclick', (event) => {
+        event.preventDefault();
+    }, { passive: false });
+</script>
 <footer class="fixed bottom-10 w-full text-center">
     <p class="text-gray-400 text-sm italic">
         &copy; 2025 Propiedad de Kevin Roldán y Judith Sancerni
