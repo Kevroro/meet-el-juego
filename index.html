@@ -12,24 +12,28 @@
     <title>Meet</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Caveat&family=Comfortaa:wght@300;400;500&display=swap" rel="stylesheet">
-    <style>
-        .custom-bg { background-color: #000000; }
-        .question-box { background: linear-gradient(145deg, #0d1e75, #9a18a4); }
-        .font-caveat { font-family: 'Caveat', cursive; }
-        .font-comfortaa { font-family: 'Comfortaa', sans-serif; }
-        h1 { font-family: 'Caveat', cursive; } /* Aplicar la fuente a todos los h1 */
-        body {
-    -webkit-overflow-scrolling: touch;
-    overflow: hidden;
-            }
+<style>
+    .custom-bg { background-color: #000000; }
+    .question-box { background: linear-gradient(145deg, #0d1e75, #9a18a4); }
+    .font-caveat { font-family: 'Caveat', cursive; }
+    .font-comfortaa { font-family: 'Comfortaa', sans-serif; }
+    h1 { font-family: 'Caveat', cursive; }
     
-    /* Definir la altura fija de la caja de preguntas */
-    .question-box {
-        height: 16rem; /* Puedes ajustar este valor según necesites */
+    /* Desactivar el margen azul al deslizar en iOS */
+    body {
+        -webkit-overflow-scrolling: touch;
+        overflow: hidden;
     }
-}
-
-    </style>
+    
+    /* Definir la altura fija de la caja de preguntas y centrar el contenido */
+    .question-box {
+        height: 16rem; /* Ajustar este valor según lo necesites */
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+</style>
 
 </head>
 <body class="custom-bg font-comfortaa">
@@ -96,7 +100,7 @@
         <img src="logoblanco.png" alt="Logotipo" class="w-24 mb-4">
         <!-- Caja de preguntas -->
 
-        <!-- Caja de preguntas con tamaño fijo -->
+<!-- Caja de preguntas con tamaño fijo y contenido centrado -->
 <div class="question-box p-8 rounded-xl shadow-lg max-w-lg w-full text-center px-4 sm:px-6">
     <div id="emoji" class="emoji mb-4"></div>
     <p id="question" class="text-white text-2xl mb-6 font-caveat">¡Clica en «Déjate llevar» para comenzar la experiencia!</p>
