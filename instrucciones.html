@@ -7,9 +7,10 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&display=swap" rel="stylesheet">
     <style>
-        /* Fondo negro */
+        /* Fondo degradado lila */
         body {
-            background-color: #000;
+            background: linear-gradient(135deg, #0d1e75, #9a18a4); /* Fondo de la página */
+            font-family: 'Arial', sans-serif; /* Fuente predeterminada */
         }
 
         /* Estilo del contenedor */
@@ -25,17 +26,18 @@
             text-align: center;
         }
 
-        /* Títulos con fondo degradado y más grandes */
+        /* Títulos en mayúscula, en negrita y sin la fuente Caveat */
         h1, h2 {
-            font-family: 'Caveat', cursive;
+            font-family: 'Arial', sans-serif; /* Fuente estándar para títulos */
+            font-weight: bold; /* Negrita */
+            text-transform: uppercase; /* Mayúsculas */
             color: white;
             background: linear-gradient(135deg, #0d1e75, #9a18a4);
             -webkit-background-clip: text;
             background-clip: text;
             display: inline;
-            font-size: 3.5rem; /* Títulos más grandes */
-            font-weight: bold;
-            margin-bottom: 1rem; /* Más espacio debajo de los títulos */
+            font-size: 2.5rem; /* Títulos más grandes */
+            margin-bottom: 1.5rem; /* Más espacio debajo de los títulos */
         }
 
         /* Justificar el texto excepto los títulos */
@@ -79,7 +81,7 @@
 </head>
 <body class="flex items-center justify-center min-h-screen">
 
-    <!-- Contenedor principal con fondo negro -->
+    <!-- Contenedor principal con fondo degradado lila -->
     <div class="content-container">
         <h1>Meet, Déjate Llevar – Un juego para conocernos mejor</h1>
 
