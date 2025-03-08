@@ -36,24 +36,21 @@
     }
 
 
-@keyframes scaleIn {
-  0% {
-    transform: scale(0.9); /* Empieza más pequeño */
-    opacity: 0; /* Comienza invisible */
-  }
-  100% {
-    transform: scale(1); /* Termina en su tamaño normal */
-    opacity: 1; /* Se vuelve completamente visible */
-  }
+@keyframes zoomIn {
+    0% {
+        transform: scale(0.8); /* Inicia más pequeño */
+        opacity: 0; /* Comienza invisible */
+    }
+    100% {
+        transform: scale(1); /* Termina en su tamaño original */
+        opacity: 1; /* Se vuelve visible */
+    }
 }
 
-.animate-scale-in {
-  animation: scaleIn 1s ease-out; /* Aplica la animación durante 1 segundo */
+.zoom-in {
+    animation: zoomIn 1s ease-out; /* Aplica la animación durante 1 segundo con easing */
 }
 
-.animate-slow {
-  animation-duration: 1.5s; /* Animación más lenta si deseas */
-}
 
 </style>
 
@@ -62,7 +59,7 @@
     
     <!-- Pantalla de carga con logotipo -->
     <div id="splash-screen" class="fixed inset-0 flex items-center justify-center bg-white z-50">
-        <img src="logo.png" alt="Logotipo" class="w-1/2 opacity-0 transform scale-90 animate-opacity-100 animate-scale-in animate-slow">
+        <img src="logo.png" alt="Logotipo" class="w-1/2 zoom-in">
     </div>
 
     <!-- Pantalla de selección de jugadores -->
