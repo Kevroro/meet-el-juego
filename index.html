@@ -38,18 +38,18 @@
 /* Animación de fade-in y zoom-in */
 @keyframes zoomIn {
   0% {
-    opacity: 0;
-    transform: scale(0.98);
+    opacity: 0.2; /* Comienza con una opacidad más baja */
+    transform: scale(0.98); /* Ajuste del zoom para que no sea tan fuerte */
   }
   100% {
-    opacity: 1;
+    opacity: 1; /* Llega a opacidad completa al final */
     transform: scale(1);
   }
 }
 
-/* Clase para aplicar la animación */
+/* Clase para aplicar la animación con tiempo reducido */
 .animate-zoom-in {
-  animation: zoomIn 1s ease-in-out;
+  animation: zoomIn 0.6s ease-in-out; /* Tiempo de animación reducido a 0.6 segundos */
 }
     
 </style>
