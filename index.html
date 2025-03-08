@@ -35,23 +35,6 @@
         overflow: hidden;
     }
 
-
-@keyframes zoomIn {
-    0% {
-        transform: scale(0.8); /* Inicia más pequeño */
-        opacity: 0; /* Comienza invisible */
-    }
-    100% {
-        transform: scale(1); /* Termina en su tamaño original */
-        opacity: 1; /* Se vuelve visible */
-    }
-}
-
-.zoom-in {
-    animation: zoomIn 1s ease-out; /* Aplica la animación durante 1 segundo con easing */
-}
-
-
 </style>
 
 </head>
@@ -59,12 +42,12 @@
     
     <!-- Pantalla de carga con logotipo -->
     <div id="splash-screen" class="fixed inset-0 flex items-center justify-center bg-white z-50">
-        <img src="logo.png" alt="Logotipo" class="w-1/2 zoom-in">
+        <img src="logo.png" alt="Logotipo" class="w-1/2">
     </div>
 
     <!-- Pantalla de selección de jugadores -->
     <div id="player-setup" class="hidden fixed inset-0 flex flex-col justify-center items-center py-10 z-40">
-        <h1 class="text-white text-5xl mb-6 font-extrabold text-center font-caveat opacity-0 transform scale-90 animate-[zoomIn_1s_ease-out_forwards]" >¿Quiénes vais a dejaros llevar?</h1>
+        <h1 class="text-white text-5xl mb-6 font-extrabold text-center font-caveat" >¿Quiénes vais a dejaros llevar?</h1>
         <div id="player-inputs" class="mb-4 flex flex-col items-center space-y-2">
             <!-- Las primeras dos cajitas -->
             <input type="text" class="player-name bg-white px-4 py-2 rounded" placeholder="Nombre 1">
@@ -83,7 +66,7 @@
 
     <!-- Pantalla de selección de categorías -->
     <div id="category-setup" class="hidden fixed inset-0 flex flex-col justify-center items-center py-10 z-30 bg-black bg-opacity-90">
-    <h1 class="text-white text-5xl mb-6 font-extrabold text-center font-caveat zoom-in" >¿En qué mood estáis hoy?</h1>
+    <h1 class="text-white text-5xl mb-6 font-extrabold text-center font-caveat" >¿En qué mood estáis hoy?</h1>
         <div class="mb-6 space-y-4">
             <!-- Opciones de categorías -->
             <label class="flex items-center space-x-3">
@@ -123,7 +106,7 @@
 <div class="question-box p-8 rounded-xl shadow-lg max-w-lg w-full text-center">
     <div id="emoji" class="emoji mb-4"></div>
     <!-- Cambié el tamaño de la fuente y añadí la clase `leading-normal` para mejorar la legibilidad -->
-    <p id="question" class="text-white text-2xl mb-3 font-caveat leading-normal zoom-in">
+    <p id="question" class="text-white text-2xl mb-3 font-caveat leading-normal">
         ¡Clica en «Déjate llevar» para comenzar la experiencia!
     </p>
     <button id="new-question" class="bg-purple-600 text-white py-2 px-6 rounded mb-4">
