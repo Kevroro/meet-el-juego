@@ -35,6 +35,22 @@
         overflow: hidden;
     }
 
+ .animate-image {
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+    
 </style>
 
 </head>
@@ -42,7 +58,7 @@
     
     <!-- Pantalla de carga con logotipo -->
     <div id="splash-screen" class="fixed inset-0 flex items-center justify-center bg-white z-50">
-        <img src="logo.png" alt="Logotipo" class="w-2/3 opacity-0 scale-90 animate-zoomIn">
+        <img src="logo.png" alt="Logotipo" class="w-2/3 animate-image">
     </div>
 
     <!-- Pantalla de selección de jugadores -->
