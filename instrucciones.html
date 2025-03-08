@@ -3,46 +3,85 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Meeeeeeeet, Déjate Llevar – Instrucciones</title>
+    <title>Meet, Déjate Llevar – Instrucciones</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&display=swap" rel="stylesheet">
     <style>
-        /* Fondo negro para toda la página */
+        /* Fondo negro */
         body {
-            background-color: black;
+            background-color: #000;
         }
 
-        /* Fuente personalizada (Caveat) */
-        @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@700&display=swap');
+        /* Estilo del contenedor */
+        .content-container {
+            background-color: rgba(255, 255, 255, 0.1); /* Fondo semitransparente */
+            color: white;
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            max-width: 900px;
+            width: 100%;
+            text-align: center;
+        }
 
         /* Títulos con fondo degradado */
-        .gradient-title {
+        h1, h2 {
+            font-family: 'Caveat', cursive;
+            color: white;
             background: linear-gradient(135deg, #0d1e75, #9a18a4);
             -webkit-background-clip: text;
-            color: transparent;
-            font-family: 'Caveat', cursive;
+            background-clip: text;
+            display: inline;
+            font-size: 2.5rem;
+            font-weight: bold;
         }
 
-        /* Justificar texto excepto en los títulos */
-        .justify-text {
+        /* Justificar el texto excepto los títulos */
+        p, ul, ol {
             text-align: justify;
+            margin-bottom: 1rem;
+        }
+
+        /* Botones con fondo degradado */
+        .gradient-btn {
+            background: linear-gradient(135deg, #0d1e75, #9a18a4);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .gradient-btn:hover {
+            background: linear-gradient(135deg, #9a18a4, #0d1e75);
+            transform: scale(1.05);
         }
     </style>
 </head>
-<body class="text-white flex items-center justify-center min-h-screen p-4">
-    <div class="bg-black p-8 rounded-2xl shadow-lg max-w-2xl text-center">
-        <h1 class="text-3xl font-bold mb-4 gradient-title">Meet, Déjate Llevar – Un juego para conocernos mejor</h1>
-        
-        <h2 class="text-xl font-semibold mt-4 text-left bg-gradient-to-r from-purple-600 to-pink-600 text-white p-2 rounded-lg">Introducción</h2>
-        <p class="mb-4 justify-text">Vivimos en una sociedad acelerada, donde siempre vamos corriendo de un lado a otro, con la mente en mil cosas a la vez. Nos comunicamos rápido, con mensajes breves y emojis, pero ¿cuánto nos detenemos realmente a hablar y escuchar? A veces, olvidamos lo importante que es conectar de verdad con quienes nos rodean.</p>
-        <p class="mb-4 justify-text">Más que un juego, Meet, Déjate Llevar es una experiencia. No hay ganadores ni perdedores, solo momentos compartidos, risas y descubrimientos sobre nosotros mismos y quienes nos acompañan.</p>
-        
-        <h2 class="text-xl font-semibold mt-4 text-left bg-gradient-to-r from-purple-600 to-pink-600 text-white p-2 rounded-lg">Preparación</h2>
+<body class="flex items-center justify-center min-h-screen">
+
+    <!-- Contenedor principal con fondo negro -->
+    <div class="content-container">
+        <h1>Meeeet, Déjate Llevar – Un juego para conocernos mejor</h1>
+
+        <!-- Introducción -->
+        <h2 class="mt-6">Introducción</h2>
+        <p>Vivimos en una sociedad acelerada, donde siempre vamos corriendo de un lado a otro, con la mente en mil cosas a la vez. Nos comunicamos rápido, con mensajes breves y emojis, pero ¿cuánto nos detenemos realmente a hablar y escuchar? A veces, olvidamos lo importante que es conectar de verdad con quienes nos rodean.</p>
+        <p>Más que un juego, Meet, Déjate Llevar es una experiencia. No hay ganadores ni perdedores, solo momentos compartidos, risas y descubrimientos sobre nosotros mismos y quienes nos acompañan.</p>
+
+        <!-- Preparación -->
+        <h2 class="mt-6">Preparación</h2>
         <ul class="text-left list-disc list-inside space-y-2">
             <li>Sentaos alrededor de una mesa, cada uno con un papel y algo para escribir.</li>
             <li>Preparad un dispositivo con el botón de Déjate Llevar, que generará preguntas al azar.</li>
         </ul>
-        
-        <h2 class="text-xl font-semibold mt-4 text-left bg-gradient-to-r from-purple-600 to-pink-600 text-white p-2 rounded-lg">Cómo jugar</h2>
+
+        <!-- Cómo jugar -->
+        <h2 class="mt-6">Cómo jugar</h2>
         <ol class="text-left list-decimal list-inside space-y-2">
             <li>Un jugador pulsa el botón y se convierte en el dueño de la pregunta.</li>
             <li>La pregunta aparece en pantalla.</li>
@@ -50,36 +89,41 @@
             <li>Cuando todos han escrito, leen sus respuestas en voz alta.</li>
             <li>Quienes hayan acertado suman 10 puntos. Si nadie acierta, no pasa nada.</li>
         </ol>
-        
-        <h2 class="text-xl font-semibold mt-4 text-left bg-gradient-to-r from-purple-600 to-pink-600 text-white p-2 rounded-lg">¡Cuéntame más!</h2>
-        <p class="mb-4 justify-text">A veces, una respuesta nos deja con ganas de saber más. En ese caso, puedes decir ¡Cuéntame más! y hacer una pausa en el juego para que el dueño de la pregunta desarrolle su historia.</p>
-        
-        <h2 class="text-xl font-semibold mt-4 text-left bg-gradient-to-r from-purple-600 to-pink-600 text-white p-2 rounded-lg">La importancia de hablar y escuchar</h2>
+
+        <!-- Cuéntame más -->
+        <h2 class="mt-6">¡Cuéntame más!</h2>
+        <p>A veces, una respuesta nos deja con ganas de saber más. En ese caso, puedes decir ¡Cuéntame más! y hacer una pausa en el juego para que el dueño de la pregunta desarrolle su historia.</p>
+
+        <!-- La importancia de hablar y escuchar -->
+        <h2 class="mt-6">La importancia de hablar y escuchar</h2>
         <ul class="text-left list-disc list-inside space-y-2">
             <li>Escuchar activamente, sin interrumpir.</li>
             <li>Respetar los turnos de palabra y dar espacio a cada historia.</li>
             <li>Abrirse a compartir, sin miedo al juicio.</li>
         </ul>
-        
-        <h2 class="text-xl font-semibold mt-4 text-left bg-gradient-to-r from-purple-600 to-pink-600 text-white p-2 rounded-lg">Objetivo del juego</h2>
-        <p class="mb-4 justify-text">El juego termina cuando alguien llega a 100 puntos, pero el verdadero objetivo es mucho más grande:</p>
+
+        <!-- Objetivo del juego -->
+        <h2 class="mt-6">Objetivo del juego</h2>
+        <p>El juego termina cuando alguien llega a 100 puntos, pero el verdadero objetivo es mucho más grande:</p>
         <ul class="text-left list-disc list-inside space-y-2">
             <li>Descubrir cuánto nos conocemos a nosotros mismos.</li>
             <li>Ver cuánto nos conocen los demás.</li>
             <li>Crear conversaciones que, de otro modo, quizás nunca tendríamos.</li>
             <li>Compartir una experiencia única con quienes nos rodean.</li>
         </ul>
-        
-        <h2 class="text-xl font-semibold mt-4 text-left bg-gradient-to-r from-purple-600 to-pink-600 text-white p-2 rounded-lg">Reglas especiales</h2>
+
+        <!-- Reglas especiales -->
+        <h2 class="mt-6">Reglas especiales</h2>
         <ul class="text-left list-disc list-inside space-y-2">
             <li>No hay penalizaciones.</li>
             <li>El botón de “restar” solo se usa si alguien suma por error.</li>
             <li>Lo más importante es disfrutar el momento y dejarse llevar.</li>
         </ul>
-        
-        <p class="mt-6 text-lg justify-text">En un mundo que no deja de moverse, Déjate Llevar nos invita a parar, a conectar y a descubrir. Prepárate para una experiencia llena de sorpresas, emociones y conexiones. ¡Déjate llevar y disfruta el viaje!</p>
-        
-        <button class="mt-6 px-6 py-2 bg-white text-purple-800 font-bold rounded-lg shadow-md hover:bg-gray-200 transition" onclick="window.location.href='index.html';">¡Empezar a jugar!</button>
+
+        <p class="mt-6 text-lg">En un mundo que no deja de moverse, Déjate Llevar nos invita a parar, a conectar y a descubrir. Prepárate para una experiencia llena de sorpresas, emociones y conexiones. ¡Déjate llevar y disfruta el viaje!</p>
+
+        <button class="gradient-btn mt-6" onclick="window.location.href='index.html';">¡Empezar a jugar!</button>
     </div>
+
 </body>
 </html>
