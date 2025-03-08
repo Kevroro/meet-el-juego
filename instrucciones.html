@@ -33,7 +33,7 @@
             -webkit-background-clip: text;
             background-clip: text;
             display: inline;
-            font-size: 2.5rem;
+            font-size: 3rem; /* Títulos más grandes */
             font-weight: bold;
         }
 
@@ -60,67 +60,93 @@
             background: linear-gradient(135deg, #9a18a4, #0d1e75);
             transform: scale(1.05);
         }
+
+        /* Cuadros redondeados de texto */
+        .content-box {
+            background-color: rgba(128, 128, 128, 0.2); /* Gris claro */
+            padding: 1.5rem;
+            border-radius: 1rem;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            margin-top: 1.5rem;
+        }
+
     </style>
 </head>
 <body class="flex items-center justify-center min-h-screen">
 
     <!-- Contenedor principal con fondo negro -->
     <div class="content-container">
-        <h1>Meeeet, Déjate Llevar – Un juego para conocernos mejor</h1>
+        <h1>Meet, Déjate Llevar – Un juego para conocernos mejor</h1>
 
         <!-- Introducción -->
-        <h2 class="mt-6">Introducción</h2>
-        <p>Vivimos en una sociedad acelerada, donde siempre vamos corriendo de un lado a otro, con la mente en mil cosas a la vez. Nos comunicamos rápido, con mensajes breves y emojis, pero ¿cuánto nos detenemos realmente a hablar y escuchar? A veces, olvidamos lo importante que es conectar de verdad con quienes nos rodean.</p>
-        <p>Más que un juego, Meet, Déjate Llevar es una experiencia. No hay ganadores ni perdedores, solo momentos compartidos, risas y descubrimientos sobre nosotros mismos y quienes nos acompañan.</p>
+        <div class="content-box">
+            <h2>Introducción</h2>
+            <p>Vivimos en una sociedad acelerada, donde siempre vamos corriendo de un lado a otro, con la mente en mil cosas a la vez. Nos comunicamos rápido, con mensajes breves y emojis, pero ¿cuánto nos detenemos realmente a hablar y escuchar? A veces, olvidamos lo importante que es conectar de verdad con quienes nos rodean.</p>
+            <p>Más que un juego, Meet, Déjate Llevar es una experiencia. No hay ganadores ni perdedores, solo momentos compartidos, risas y descubrimientos sobre nosotros mismos y quienes nos acompañan.</p>
+        </div>
 
         <!-- Preparación -->
-        <h2 class="mt-6">Preparación</h2>
-        <ul class="text-left list-disc list-inside space-y-2">
-            <li>Sentaos alrededor de una mesa, cada uno con un papel y algo para escribir.</li>
-            <li>Preparad un dispositivo con el botón de Déjate Llevar, que generará preguntas al azar.</li>
-        </ul>
+        <div class="content-box">
+            <h2>Preparación</h2>
+            <ul class="text-left list-disc list-inside space-y-2">
+                <li>Sentaos alrededor de una mesa, cada uno con un papel y algo para escribir.</li>
+                <li>Preparad un dispositivo con el botón de Déjate Llevar, que generará preguntas al azar.</li>
+            </ul>
+        </div>
 
         <!-- Cómo jugar -->
-        <h2 class="mt-6">Cómo jugar</h2>
-        <ol class="text-left list-decimal list-inside space-y-2">
-            <li>Un jugador pulsa el botón y se convierte en el dueño de la pregunta.</li>
-            <li>La pregunta aparece en pantalla.</li>
-            <li>Todos los jugadores escriben qué creen que responderá el dueño de la pregunta.</li>
-            <li>Cuando todos han escrito, leen sus respuestas en voz alta.</li>
-            <li>Quienes hayan acertado suman 10 puntos. Si nadie acierta, no pasa nada.</li>
-        </ol>
+        <div class="content-box">
+            <h2>Cómo jugar</h2>
+            <ol class="text-left list-decimal list-inside space-y-2">
+                <li>Un jugador pulsa el botón y se convierte en el dueño de la pregunta.</li>
+                <li>La pregunta aparece en pantalla.</li>
+                <li>Todos los jugadores escriben qué creen que responderá el dueño de la pregunta.</li>
+                <li>Cuando todos han escrito, leen sus respuestas en voz alta.</li>
+                <li>Quienes hayan acertado suman 10 puntos. Si nadie acierta, no pasa nada.</li>
+            </ol>
+        </div>
 
         <!-- Cuéntame más -->
-        <h2 class="mt-6">¡Cuéntame más!</h2>
-        <p>A veces, una respuesta nos deja con ganas de saber más. En ese caso, puedes decir ¡Cuéntame más! y hacer una pausa en el juego para que el dueño de la pregunta desarrolle su historia.</p>
+        <div class="content-box">
+            <h2>¡Cuéntame más!</h2>
+            <p>A veces, una respuesta nos deja con ganas de saber más. En ese caso, puedes decir ¡Cuéntame más! y hacer una pausa en el juego para que el dueño de la pregunta desarrolle su historia.</p>
+        </div>
 
         <!-- La importancia de hablar y escuchar -->
-        <h2 class="mt-6">La importancia de hablar y escuchar</h2>
-        <ul class="text-left list-disc list-inside space-y-2">
-            <li>Escuchar activamente, sin interrumpir.</li>
-            <li>Respetar los turnos de palabra y dar espacio a cada historia.</li>
-            <li>Abrirse a compartir, sin miedo al juicio.</li>
-        </ul>
+        <div class="content-box">
+            <h2>La importancia de hablar y escuchar</h2>
+            <ul class="text-left list-disc list-inside space-y-2">
+                <li>Escuchar activamente, sin interrumpir.</li>
+                <li>Respetar los turnos de palabra y dar espacio a cada historia.</li>
+                <li>Abrirse a compartir, sin miedo al juicio.</li>
+            </ul>
+        </div>
 
         <!-- Objetivo del juego -->
-        <h2 class="mt-6">Objetivo del juego</h2>
-        <p>El juego termina cuando alguien llega a 100 puntos, pero el verdadero objetivo es mucho más grande:</p>
-        <ul class="text-left list-disc list-inside space-y-2">
-            <li>Descubrir cuánto nos conocemos a nosotros mismos.</li>
-            <li>Ver cuánto nos conocen los demás.</li>
-            <li>Crear conversaciones que, de otro modo, quizás nunca tendríamos.</li>
-            <li>Compartir una experiencia única con quienes nos rodean.</li>
-        </ul>
+        <div class="content-box">
+            <h2>Objetivo del juego</h2>
+            <p>El juego termina cuando alguien llega a 100 puntos, pero el verdadero objetivo es mucho más grande:</p>
+            <ul class="text-left list-disc list-inside space-y-2">
+                <li>Descubrir cuánto nos conocemos a nosotros mismos.</li>
+                <li>Ver cuánto nos conocen los demás.</li>
+                <li>Crear conversaciones que, de otro modo, quizás nunca tendríamos.</li>
+                <li>Compartir una experiencia única con quienes nos rodean.</li>
+            </ul>
+        </div>
 
         <!-- Reglas especiales -->
-        <h2 class="mt-6">Reglas especiales</h2>
-        <ul class="text-left list-disc list-inside space-y-2">
-            <li>No hay penalizaciones.</li>
-            <li>El botón de “restar” solo se usa si alguien suma por error.</li>
-            <li>Lo más importante es disfrutar el momento y dejarse llevar.</li>
-        </ul>
+        <div class="content-box">
+            <h2>Reglas especiales</h2>
+            <ul class="text-left list-disc list-inside space-y-2">
+                <li>No hay penalizaciones.</li>
+                <li>El botón de “restar” solo se usa si alguien suma por error.</li>
+                <li>Lo más importante es disfrutar el momento y dejarse llevar.</li>
+            </ul>
+        </div>
 
-        <p class="mt-6 text-lg">En un mundo que no deja de moverse, Déjate Llevar nos invita a parar, a conectar y a descubrir. Prepárate para una experiencia llena de sorpresas, emociones y conexiones. ¡Déjate llevar y disfruta el viaje!</p>
+        <div class="content-box">
+            <p class="mt-6 text-lg">En un mundo que no deja de moverse, Déjate Llevar nos invita a parar, a conectar y a descubrir. Prepárate para una experiencia llena de sorpresas, emociones y conexiones. ¡Déjate llevar y disfruta el viaje!</p>
+        </div>
 
         <button class="gradient-btn mt-6" onclick="window.location.href='index.html';">¡Empezar a jugar!</button>
     </div>
