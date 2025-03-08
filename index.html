@@ -35,39 +35,41 @@
         overflow: hidden;
     }
 
-/* Definir la animación */
-@keyframes fadeIn {
-    0% {
-        opacity: 0;
-        transform: translateY(20px);
+@layer utilities {
+    @keyframes fadeInLogo {
+        0% {
+            opacity: 0;
+            transform: scale(0.8);
+        }
+        100% {
+            opacity: 1;
+            transform: scale(1);
+        }
     }
-    100% {
-        opacity: 1;
-        transform: translateY(0);
+
+    .fade-in-logo {
+        animation: fadeInLogo 2s ease-out forwards;
     }
 }
 
-/* Aplicar la animación al texto */
-.fade-in-text {
-    animation: fadeIn 2s ease-out forwards;
+
+@layer utilities {
+    @keyframes fadeInText {
+        0% {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        100% {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .fade-in-text {
+        animation: fadeInText 2s ease-out forwards;
+    }
 }
 
-    /* Animación para hacer aparecer el logo */
-@keyframes fadeInLogo {
-    0% {
-        opacity: 0;
-        transform: scale(0.8); /* Escala más pequeña al principio */
-    }
-    100% {
-        opacity: 1;
-        transform: scale(1); /* Escala normal al final */
-    }
-}
-
-/* Aplicar la animación al logo */
-.fade-in-logo {
-    animation: fadeInLogo 2s ease-out forwards;
-}
     
 </style>
 
@@ -76,7 +78,7 @@
     
     <!-- Pantalla de carga con logotipo -->
     <div id="splash-screen" class="fixed inset-0 flex items-center justify-center bg-white z-50">
-        <img src="logo.png" alt="Logotipo" class="w-2/3 fade-in-logo" >
+        <img src="logo.png" alt="Logotipo" class="w-1/2 fade-in-logo">
     </div>
 
     <!-- Pantalla de selección de jugadores -->
@@ -140,7 +142,7 @@
 <div class="question-box p-8 rounded-xl shadow-lg max-w-lg w-full text-center">
     <div id="emoji" class="emoji mb-4"></div>
     <!-- Cambié el tamaño de la fuente y añadí la clase `leading-normal` para mejorar la legibilidad -->
-    <p id="question" class="text-white text-2xl mb-3 font-caveat leading-normal"fade-in-text>
+    <p id="question" class="text-white text-2xl mb-3 font-caveat leading-normal fade-in-text">
         ¡Clica en «Déjate llevar» para comenzar la experiencia!
     </p>
     <button id="new-question" class="bg-purple-600 text-white py-2 px-6 rounded mb-4">
