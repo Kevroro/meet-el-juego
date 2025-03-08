@@ -35,20 +35,21 @@
         overflow: hidden;
     }
 
-.animate-image {
-    animation: fadeIn 1s ease-in-out;
+/* Animación de fade-in y zoom-in */
+@keyframes zoomIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
-@keyframes fadeIn {
-    0% {
-        opacity: 0;
-        transform: scale(0.95);
-    }
-
-    100% {
-        opacity: 1;
-        transform: scale(1);
-    }
+/* Clase para aplicar la animación */
+.animate-zoom-in {
+  animation: zoomIn 1s ease-in-out;
 }
     
 </style>
@@ -57,12 +58,12 @@
 <body class="custom-bg font-comfortaa">
     
     <!-- Pantalla de carga con logotipo -->
-    <div id="splash-screen" class="fixed inset-0 flex items-center justify-center bg-white z-50 animate-image">
+    <div id="splash-screen" class="fixed inset-0 flex items-center justify-center bg-white z-50 animate-zoom-in">
         <img src="logo.png" alt="Logotipo" class="w-1/2">
     </div>
 
     <!-- Pantalla de selección de jugadores -->
-    <div id="player-setup" class="hidden fixed inset-0 flex flex-col justify-center items-center py-10 z-40 animate-image">
+    <div id="player-setup" class="hidden fixed inset-0 flex flex-col justify-center items-center py-10 z-40 animate-zoom-in">
         <h1 class="text-white text-5xl mb-6 font-extrabold text-center font-caveat" >¿Quiénes vais a dejaros llevar?</h1>
         <div id="player-inputs" class="mb-4 flex flex-col items-center space-y-2">
             <!-- Las primeras dos cajitas -->
@@ -81,7 +82,7 @@
     </div>
 
     <!-- Pantalla de selección de categorías -->
-    <div id="category-setup" class="hidden fixed inset-0 flex flex-col justify-center items-center py-10 z-30 bg-black bg-opacity-90 animate-image">
+    <div id="category-setup" class="hidden fixed inset-0 flex flex-col justify-center items-center py-10 z-30 bg-black bg-opacity-90 animate-zoom-in">
     <h1 class="text-white text-5xl mb-6 font-extrabold text-center font-caveat" >¿En qué mood estáis hoy?</h1>
         <div class="mb-6 space-y-4">
             <!-- Opciones de categorías -->
@@ -141,20 +142,20 @@ document.addEventListener("DOMContentLoaded", () => {
     // Función para cambiar las pantallas
     function showScreen(screenId) {
         // Primero, ocultar todas las pantallas
-        document.querySelectorAll(".screen").forEach(screen => {
+        document.querySelectorAll(".hidden").forEach(screen => {
             screen.classList.add("hidden");
         });
 
-        // Añadir la clase de animación a la pantalla que se va a mostrar
+        // Añadir la clase de animación y mostrar la pantalla
         const screenToShow = document.getElementById(screenId);
         screenToShow.classList.remove("hidden");
-        screenToShow.classList.add("animate-image");
+        screenToShow.classList.add("animate-zoom-in");
     }
 
-    // Ejemplo de cómo mostrar la pantalla de selección de jugadores
+    // Ejemplo de cómo mostrar la pantalla de selección de jugadores después de 3 segundos
     setTimeout(() => {
         showScreen("player-setup");
-    }, 3000);  // Después de 3 segundos mostrar la pantalla de selección de jugadores
+    }, 3000);  // Cambia esto a la lógica que desees para el cambio de pantalla
 });
 
         
