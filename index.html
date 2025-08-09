@@ -10,7 +10,28 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Meet</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.tailwindcss.com">
+// Control del popup de nueva versión
+const versionKey = "gameVersion2025"; // clave para localStorage
+const versionPopup = document.getElementById("version-popup");
+const closePopupBtn = document.getElementById("close-popup");
+
+window.addEventListener("load", () => {
+  // Si no hemos guardado que el usuario ya vio la versión, mostrar popup
+  if (!localStorage.getItem(versionKey)) {
+    // Mostrar con pequeño retraso para que no choque con splash
+    setTimeout(() => {
+      versionPopup.classList.remove("hidden");
+    }, 3100);
+  }
+});
+
+closePopupBtn.addEventListener("click", () => {
+  versionPopup.classList.add("hidden");
+  // Guardamos que ya ha visto el popup para no volver a mostrarlo
+  localStorage.setItem(versionKey, "seen");
+});
+    </script>
     <link href="https://fonts.googleapis.com/css2?family=Caveat&family=Comfortaa:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
     .custom-bg { background-color: #000000; }
@@ -30,7 +51,16 @@
     h1 { font-family: 'Caveat', cursive; }
 
     /* Desactivar el margen azul al deslizar en iOS */
-    body {
+    body 
+    <!-- Popup Nueva Versión -->
+<div id="version-popup" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-70 z-[9999] hidden">
+  <div class="bg-white rounded-lg p-8 max-w-sm text-center shadow-lg animate-zoom-in relative">
+    <h2 class="text-2xl font-bold mb-4 font-caveat">¡Nueva versión 2025!</h2>
+    <p class="mb-6 text-gray-800">Hemos actualizado la experiencia para que disfrutes más que nunca.</p>
+    <button id="close-popup" class="bg-gradient-to-r from-[#0d1e75] to-[#9a18a4] text-white px-6 py-2 rounded hover:brightness-110 transition">Cerrar</button>
+  </div>
+</div>
+    {
         -webkit-overflow-scrolling: touch;
         overflow: hidden;
     }
@@ -505,5 +535,6 @@ function subtractScore(index) {
         &copy; 2025 Propiedad de Kevin Roldán y Judith Sancerni
     </p>
 </footer>
+
 
 
