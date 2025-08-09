@@ -36,7 +36,6 @@
       box-shadow: 0 4px 15px rgba(154, 24, 164, 0.7);
       color: white;
     }
-    /* Animación más sutil */
     @keyframes zoomIn {
       from {
         opacity: 0.3;
@@ -49,6 +48,10 @@
     }
     .animate-zoom-in {
       animation: zoomIn 0.5s ease-in-out;
+    }
+    /* Estilos para el popup de versión */
+    #version-popup {
+      background-color: rgba(0, 0, 0, 0.7);
     }
   </style>
 </head>
@@ -110,6 +113,15 @@
     <section id="player-scores" class="mt-8 w-full max-w-md space-y-6" aria-live="polite"></section>
   </main>
 
+  <!-- Popup Nueva Versión -->
+  <div id="version-popup" class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center hidden z-60">
+    <div class="bg-white rounded-lg p-8 max-w-sm text-center shadow-lg animate-zoom-in">
+      <h2 class="text-2xl font-bold mb-4 font-caveat">¡Nueva versión 2025!</h2>
+      <p class="mb-6 text-gray-800">Hemos actualizado la experiencia para que disfrutes más que nunca.</p>
+      <button id="close-popup" class="bg-gradient-to-r from-[#0d1e75] to-[#9a18a4] text-white px-6 py-2 rounded hover:brightness-110 transition">Cerrar</button>
+    </div>
+  </div>
+
   <footer class="fixed bottom-8 w-full text-center text-gray-400 text-sm italic select-none">
     &copy; 2025 Propiedad de Kevin Roldán y Judith Sancerni
   </footer>
@@ -129,6 +141,11 @@
       const emojiEl = document.getElementById('emoji');
       const playerScoresEl = document.getElementById('player-scores');
       const selectAllCheckbox = document.getElementById('select-all');
+
+      // Popup elementos
+      const versionPopup = document.getElementById('version-popup');
+      const closePopupBtn = document.getElementById('close-popup');
+      const versionKey = 'gameVersion2025';
 
       let players = [];
       let filteredQuestions = [];
@@ -151,6 +168,20 @@
         playerSetup.classList.add('animate-zoom-in');
         playerSetup.querySelector('input').focus();
       }, 3000);
+
+      // Mostrar popup solo si no se ha visto antes
+      window.addEventListener('load', () => {
+        if (!localStorage.getItem(versionKey)) {
+          setTimeout(() => {
+            versionPopup.classList.remove('hidden');
+          }, 3100);
+        }
+      });
+
+      closePopupBtn.addEventListener('click', () => {
+        versionPopup.classList.add('hidden');
+        localStorage.setItem(versionKey, 'seen');
+      });
 
       // Añadir jugador input
       addPlayerBtn.addEventListener('click', () => {
@@ -294,6 +325,7 @@
 
       // Evitar zoom con doble clic en móvil
       document.addEventListener('dblclick', e => e.preventDefault(), { passive: false });
+
     })();
   </script>
 </body>
