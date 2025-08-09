@@ -19,6 +19,8 @@
       background-color: #000000;
       overscroll-behavior: contain;
       -webkit-overflow-scrolling: touch;
+      margin: 0;
+      min-height: 100vh;
     }
     h1 {
       font-family: 'Caveat', cursive;
@@ -52,18 +54,19 @@
     /* Estilos para el popup de versión */
     #version-popup {
       background-color: rgba(0, 0, 0, 0.7);
+      z-index: 9999 !important; /* Aseguramos que esté arriba */
     }
   </style>
 </head>
 <body class="relative text-white">
 
   <!-- Splash Screen -->
-  <section id="splash-screen" class="fixed inset-0 bg-white flex items-center justify-center z-50">
-    <img src="logo.png" alt="Logotipo" class="w-2/3 animate-zoom-in" />
+  <section id="splash-screen" class="fixed inset-0 bg-white flex items-center justify-center z-50 min-h-screen">
+    <img src="logo.png" alt="Logotipo" class="w-2/3 max-w-xs sm:max-w-md animate-zoom-in" />
   </section>
 
   <!-- Player Setup -->
-  <section id="player-setup" class="hidden fixed inset-0 bg-black bg-opacity-90 flex flex-col justify-center items-center p-10 z-40 animate-zoom-in">
+  <section id="player-setup" class="fixed inset-0 bg-black bg-opacity-90 flex flex-col justify-center items-center p-10 z-40 animate-zoom-in hidden">
     <h1 class="text-5xl font-extrabold text-center mb-6">¿Quiénes vais a<br>dejaros llevar?</h1>
     <form id="players-form" class="flex flex-col items-center space-y-3 w-full max-w-md">
       <input type="text" name="player" class="player-name rounded px-4 py-2 w-full text-black" placeholder="Nombre 1" required autocomplete="off" />
@@ -75,7 +78,7 @@
   </section>
 
   <!-- Category Setup -->
-  <section id="category-setup" class="hidden fixed inset-0 bg-black bg-opacity-95 flex flex-col justify-center items-center p-10 z-30 animate-zoom-in">
+  <section id="category-setup" class="fixed inset-0 bg-black bg-opacity-95 flex flex-col justify-center items-center p-10 z-30 animate-zoom-in hidden">
     <h1 class="text-5xl font-extrabold text-center mb-6">¿En qué mood<br>estáis hoy?</h1>
     <form id="categories-form" class="space-y-5 max-w-sm w-full text-lg">
       <label class="flex items-center space-x-3 cursor-pointer">
@@ -103,7 +106,7 @@
   </section>
 
   <!-- Game Screen -->
-  <main id="game-screen" class="hidden fixed inset-0 bg-black bg-opacity-95 flex flex-col justify-center items-center p-10 z-30 animate-zoom-in max-w-xl mx-auto w-full">
+  <main id="game-screen" class="fixed inset-0 bg-black bg-opacity-95 flex flex-col justify-center items-center p-10 z-30 animate-zoom-in hidden max-w-xl mx-auto w-full">
     <img src="logoblanco.png" alt="Logotipo" class="w-32 mb-6" />
     <section class="question-box w-full max-w-lg rounded-xl shadow-lg text-center">
       <div id="emoji" class="text-5xl mb-4 select-none"></div>
@@ -114,8 +117,8 @@
   </main>
 
   <!-- Popup Nueva Versión -->
-  <div id="version-popup" class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center hidden z-60">
-    <div class="bg-white rounded-lg p-8 max-w-sm text-center shadow-lg animate-zoom-in">
+  <div id="version-popup" class="fixed inset-0 flex items-center justify-center hidden">
+    <div class="bg-white rounded-lg p-8 max-w-sm text-center shadow-lg animate-zoom-in relative z-[9999]">
       <h2 class="text-2xl font-bold mb-4 font-caveat">¡Nueva versión 2025!</h2>
       <p class="mb-6 text-gray-800">Hemos actualizado la experiencia para que disfrutes más que nunca.</p>
       <button id="close-popup" class="bg-gradient-to-r from-[#0d1e75] to-[#9a18a4] text-white px-6 py-2 rounded hover:brightness-110 transition">Cerrar</button>
