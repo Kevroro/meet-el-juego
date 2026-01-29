@@ -5,6 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Meet - Experience</title>
     
+    <!-- Favicons y Manifest -->
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="apple-touch-icon" href="favicon2.png">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#000000">
+
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Caveat&family=Comfortaa:wght@300;400;500&display=swap" rel="stylesheet">
     <style>
@@ -17,12 +23,9 @@
         .animate-shake { animation: shake 0.2s ease-in-out 2; }
         @keyframes zoomIn { 0% { opacity: 0; transform: scale(0.95); } 100% { opacity: 1; transform: scale(1); } }
         .animate-zoom-in { animation: zoomIn 0.3s ease-out forwards; }
-        @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-10px); } 100% { transform: translateY(0px); } }
-        .animate-float { animation: float 3s ease-in-out infinite; }
         .hidden { display: none !important; }
         .safe-pb { padding-bottom: env(safe-area-inset-bottom); }
         .safe-pt { padding-top: env(safe-area-inset-top); }
-        input::placeholder { color: rgba(255,255,255,0.4); }
         .mood-card { transition: all 0.2s ease; border: 1px solid rgba(255,255,255,0.1); }
         .mood-card.selected { border-color: #fff; background: rgba(255,255,255,0.1); transform: scale(1.05); }
         .scrollbar-hide::-webkit-scrollbar { display: none; }
@@ -30,80 +33,109 @@
 </head>
 <body class="text-white">
 
+    <!-- Splash Screen con logoblanco.png -->
     <div id="splash-screen" class="fixed inset-0 flex items-center justify-center bg-white z-50">
         <div class="flex flex-col items-center text-center px-6">
-             <div class="w-24 h-24 bg-black rounded-full flex items-center justify-center text-white font-bold animate-pulse text-2xl">MEET</div>
-             <p class="text-black mt-8 font-caveat text-3xl">Cargando catálogo completo...</p>
+             <div class="w-32 h-32 mb-6 flex items-center justify-center">
+                <img src="logoblanco.png" alt="MEET" class="max-w-full max-h-full object-contain" onerror="this.src='logo.png'; this.onerror=()=>this.parentElement.innerHTML='<div class=\'w-24 h-24 bg-black rounded-full flex items-center justify-center text-white font-bold animate-pulse text-2xl\'>MEET</div>'">
+             </div>
+             <p id="splash-text" class="text-black font-caveat text-3xl">Cargando catálogo...</p>
         </div>
     </div>
 
+    <!-- Modal de Instrucciones -->
+    <div id="info-modal" class="hidden fixed inset-0 flex items-center justify-center z-[110] bg-black/95 p-6 animate-zoom-in">
+        <div class="max-w-xs text-center">
+            <h3 class="text-3xl font-caveat mb-4 text-purple-400">Cómo jugar</h3>
+            <ul class="text-[11px] text-left space-y-4 opacity-80 tracking-wide leading-relaxed">
+                <li>• <b>CREA</b> una sala y comparte el código.</li>
+                <li>• <b>ELIGE</b> el mood según el ambiente.</li>
+                <li>• <b>RESPONDE</b> con honestidad o bebe (tú pones las reglas).</li>
+                <li>• <b>PUNTÚA</b> deslizando los controles de tu marcador.</li>
+                <li>• <b>GANA</b> el primero en llegar a 100.</li>
+            </ul>
+            <div class="flex flex-col space-y-3 mt-8">
+                <button onclick="document.getElementById('info-modal').classList.add('hidden')" class="border border-white/20 px-8 py-3 rounded-full text-[10px] uppercase tracking-widest">Cerrar</button>
+                <a href="instrucciones.html" target="_blank" class="text-[9px] uppercase tracking-widest text-white/40 underline">Ver guía completa en HTML</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Victoria -->
     <div id="win-modal" class="hidden fixed inset-0 flex items-center justify-center z-[100] bg-black/90 p-6 animate-zoom-in">
         <div class="text-center">
-            <div class="text-8xl mb-6 animate-float">🏆</div>
-            <h2 class="text-4xl font-caveat mb-2">¡Victoria!</h2>
-            <p id="winner-name" class="text-xl font-bold text-purple-400 mb-6 tracking-widest uppercase">ALGUIEN</p>
-            <button onclick="closeWinModal()" class="bg-white text-black font-bold py-4 px-12 rounded-full text-[10px] tracking-widest uppercase active:scale-95 transition-all">Seguir jugando</button>
+            <div class="text-8xl mb-6">🏆</div>
+            <h2 class="text-4xl font-caveat mb-2 text-white">¡Victoria!</h2>
+            <p id="winner-name" class="text-xl font-bold text-purple-400 mb-6 uppercase tracking-widest">ALGUIEN</p>
+            <button onclick="document.getElementById('win-modal').classList.add('hidden')" class="bg-white text-black font-bold py-4 px-12 rounded-full text-[10px] uppercase active:scale-95 transition-all">Seguir jugando</button>
         </div>
     </div>
 
-    <div id="lobby-setup" class="hidden fixed inset-0 flex flex-col items-center justify-center p-6 z-40 animate-zoom-in safe-pt safe-pb">
-        <h1 class="text-6xl mb-4 font-caveat text-center text-white">MEET</h1>
-        <p class="mb-10 opacity-40 text-[10px] tracking-[0.4em] uppercase text-center">Conexión Real</p>
+    <!-- Lobby -->
+    <div id="lobby-setup" class="hidden fixed inset-0 flex flex-col items-center justify-center p-6 z-40 animate-zoom-in safe-pt safe-pb overflow-y-auto">
+        <div class="mb-6 flex flex-col items-center">
+            <img src="logo.png" class="h-24 w-auto mb-2" alt="Logo Meet" onerror="this.style.display='none'">
+            <h1 class="text-6xl font-caveat text-center text-white">MEET</h1>
+        </div>
         
         <div class="w-full max-w-xs space-y-4">
-            <input id="user-nickname" type="text" class="w-full bg-white/10 text-white px-6 py-4 rounded-2xl outline-none border border-white/20 text-center" placeholder="Tu nombre o apodo">
+            <input id="user-nickname" type="text" class="w-full bg-white/10 text-white px-6 py-4 rounded-2xl border border-white/20 text-center outline-none focus:border-purple-500 transition-colors" placeholder="Tu apodo">
             
-            <p class="text-[9px] uppercase tracking-widest text-center opacity-40 mt-4">Elige el ambiente</p>
-            <div id="mood-selector" class="grid grid-cols-4 gap-2 py-2">
+            <div class="flex justify-between items-center px-2">
+                <p class="text-[9px] uppercase tracking-widest opacity-40">Modo de juego</p>
+                <button onclick="document.getElementById('info-modal').classList.remove('hidden')" class="text-[9px] uppercase tracking-widest text-purple-400 font-bold">Ayuda</button>
+            </div>
+
+            <div id="mood-selector" class="grid grid-cols-4 gap-2">
                 <button onclick="selectMood('chill', this)" class="mood-card selected p-2 rounded-xl flex flex-col items-center">
                     <span class="text-lg">❤️</span>
-                    <span class="text-[7px] mt-1 uppercase font-bold opacity-60">Chill</span>
+                    <span class="text-[7px] mt-1 uppercase opacity-60">Chill</span>
                 </button>
                 <button onclick="selectMood('hot', this)" class="mood-card p-2 rounded-xl flex flex-col items-center">
                     <span class="text-lg">🔥</span>
-                    <span class="text-[7px] mt-1 uppercase font-bold opacity-60">Hot</span>
+                    <span class="text-[7px] mt-1 uppercase opacity-60">Hot</span>
                 </button>
                 <button onclick="selectMood('psycho', this)" class="mood-card p-2 rounded-xl flex flex-col items-center">
                     <span class="text-lg">🧠</span>
-                    <span class="text-[7px] mt-1 uppercase font-bold opacity-60">Psycho</span>
+                    <span class="text-[7px] mt-1 uppercase opacity-60">Psycho</span>
                 </button>
                 <button onclick="selectMood('mix', this)" class="mood-card p-2 rounded-xl flex flex-col items-center">
                     <span class="text-lg">🌀</span>
-                    <span class="text-[7px] mt-1 uppercase font-bold opacity-60">Mix</span>
+                    <span class="text-[7px] mt-1 uppercase opacity-60">Mix</span>
                 </button>
             </div>
 
             <div class="pt-2 space-y-3">
-                <button id="btn-create-room" class="w-full bg-white text-black py-4 rounded-2xl font-bold active:scale-95 transition-all shadow-lg">CREAR SALA NUEVA</button>
-                <div class="flex items-center py-2 opacity-20"><div class="flex-grow border-t"></div><span class="mx-4 text-[10px]">O</span><div class="flex-grow border-t"></div></div>
+                <button id="btn-create-room" class="w-full bg-white text-black py-4 rounded-2xl font-bold active:scale-95 shadow-lg uppercase text-[10px] tracking-[0.2em]">Crear Sala</button>
+                <div class="flex items-center py-2 opacity-20"><div class="flex-grow border-t border-white"></div><span class="mx-4 text-[10px]">O</span><div class="flex-grow border-t border-white"></div></div>
                 <div class="flex flex-col space-y-2">
                     <input id="room-id-input" type="text" maxlength="4" class="w-full bg-white/5 text-white px-4 py-4 rounded-2xl border border-white/10 uppercase outline-none text-center font-bold tracking-[0.4em]" placeholder="CÓDIGO">
-                    <button id="btn-join-room" class="w-full bg-indigo-600/50 py-4 rounded-2xl font-bold active:scale-95 transition-all border border-indigo-400/20">UNIRSE A SALA</button>
+                    <button id="btn-join-room" class="w-full bg-indigo-600/50 py-4 rounded-2xl font-bold active:scale-95 border border-indigo-400/20 uppercase text-[10px] tracking-[0.2em]">Unirse</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <div id="game-screen" class="hidden fixed inset-0 flex flex-col justify-between items-center py-6 px-4 z-30 animate-zoom-in safe-pt safe-pb bg-black">
+    <!-- Pantalla de Juego -->
+    <div id="game-screen" class="hidden fixed inset-0 flex flex-col justify-between items-center py-6 px-4 z-30 safe-pt safe-pb bg-black">
         <div class="w-full flex justify-between items-center px-4">
-            <button id="btn-exit" class="text-white/20 uppercase text-[10px] tracking-widest font-bold">Salir</button>
+            <button onclick="window.location.reload()" class="text-white/20 uppercase text-[10px] tracking-widest font-bold">Salir</button>
             <div id="display-room-id" class="text-[10px] font-bold bg-white/5 px-4 py-2 rounded-full border border-white/10 text-purple-400 tracking-[0.2em]">----</div>
         </div>
 
-        <div id="turn-indicator" class="text-[10px] uppercase tracking-[0.3em] font-bold text-white/40 mb-2 bg-white/5 px-6 py-2 rounded-full border border-white/5">Esperando...</div>
+        <div id="turn-indicator" class="text-[10px] uppercase tracking-[0.3em] font-bold text-white/40 bg-white/5 px-6 py-2 rounded-full border border-white/5">Esperando...</div>
 
         <div id="q-container" class="question-box w-full max-w-sm p-8 rounded-[3rem] shadow-2xl text-center relative mx-4 border border-white/10">
             <div id="emoji" class="text-6xl mb-6 drop-shadow-lg">✨</div>
             <div class="flex-1 flex items-center justify-center min-h-[140px]">
-                <p id="question" class="text-2xl md:text-3xl font-caveat leading-tight px-2 text-white">...</p>
+                <p id="question" class="text-2xl md:text-3xl font-caveat leading-tight px-2 text-white">Cargando catálogo...</p>
             </div>
             
             <div id="host-controls" class="mt-8 hidden flex flex-col items-center space-y-4">
                 <div class="flex space-x-2 w-full justify-center">
-                    <button id="btn-skip" class="bg-white/10 text-white/60 font-bold py-4 px-6 rounded-full active:scale-90 transition-all text-[9px] tracking-[0.2em] border border-white/10">SALTAR</button>
-                    <button id="new-question" class="bg-white text-black font-bold py-4 px-10 rounded-full shadow-2xl active:scale-90 transition-all text-[9px] tracking-[0.2em]">SIGUIENTE</button>
+                    <button id="btn-skip" class="bg-white/10 text-white/60 font-bold py-4 px-6 rounded-full active:scale-90 text-[9px] tracking-[0.2em]">SALTAR</button>
+                    <button id="new-question" class="bg-white text-black font-bold py-4 px-10 rounded-full shadow-2xl active:scale-90 text-[9px] tracking-[0.2em]">SIGUIENTE</button>
                 </div>
-                <button id="btn-reset" class="text-[8px] uppercase tracking-[0.4em] opacity-30 mt-2 border border-white/10 px-4 py-2 rounded-full">Reset Marcadores</button>
             </div>
         </div>
 
@@ -115,176 +147,32 @@
         import { getFirestore, doc, setDoc, getDoc, onSnapshot, updateDoc, arrayUnion } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
         import { getAuth, signInAnonymously, onAuthStateChanged, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
 
-        const firebaseConfig = JSON.parse(__firebase_config);
-        const app = initializeApp(firebaseConfig);
+        const getFirebaseConfig = () => {
+            try {
+                if (typeof __firebase_config !== 'undefined') return JSON.parse(__firebase_config);
+            } catch (e) {}
+            return null;
+        };
+
+        const config = getFirebaseConfig();
+        if (!config) {
+            document.getElementById('splash-text').innerHTML = "Configuración faltante.<br><span class='text-[10px] uppercase tracking-widest opacity-50'>Verifica las variables de entorno</span>";
+            throw new Error("Missing Firebase Config");
+        }
+
+        const app = initializeApp(config);
         const db = getFirestore(app);
         const auth = getAuth(app);
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'meet-game-final';
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'meet-v1';
 
-        let currentRoomId = null;
-        let currentUser = null;
-        let isHost = false;
-        let selectedMood = 'chill';
-        let unsubscribeRoom = null;
-        let hasWinnerShown = false;
+        let currentRoomId = null, currentUser = null, isHost = false, selectedMood = 'chill', unsubscribeRoom = null;
 
-        const DATABASE = {
-            chill: [
-                { text: "¿Qué significa el amor para ti?", emoji: "❤️" },
-                { text: "¿En qué crees que se basa el amor a primera vista?", emoji: "❤️" },
-                { text: "¿Qué fue lo que más te molestó de tu primer amor?", emoji: "❤️" },
-                { text: "¿Qué es lo más fuerte que has hecho por amor?", emoji: "❤️" },
-                { text: "¿Qué significa para ti ser una persona romántica?", emoji: "❤️" },
-                { text: "¿Cómo sería tu cita perfecta?", emoji: "❤️" },
-                { text: "¿Qué piensas sobre el concepto de amor eterno?", emoji: "❤️" },
-                { text: "¿Te gustaría tener una relación a larga distancia? ¿Por qué?", emoji: "❤️" },
-                { text: "¿Cuál es tu mayor temor en una relación?", emoji: "❤️" },
-                { text: "¿Qué valoras más en una pareja?", emoji: "❤️" },
-                { text: "¿Qué es lo que más te gusta hacer con tu pareja?", emoji: "❤️" },
-                { text: "¿Cuál es tu recuerdo más bonito de un amor?", emoji: "❤️" },
-                { text: "¿Tienes alguna cita famosa sobre el amor que te guste?", emoji: "❤️" },
-                { text: "¿Cómo te gustaría que fuera tu boda ideal?", emoji: "❤️" },
-                { text: "¿Cuál es el detalle más bonito que has recibido de un ser querido?", emoji: "❤️" },
-                { text: "¿Crees que el amor puede sanar heridas emocionales?", emoji: "❤️" },
-                { text: "¿Qué tipo de abrazos te gustan más?", emoji: "❤️" },
-                { text: "¿Qué harías si alguien te declarara su amor de una forma muy original?", emoji: "❤️" },
-                { text: "¿Qué significa para ti el amor verdadero?", emoji: "❤️" },
-                { text: "¿Qué opinas sobre las sorpresas románticas?", emoji: "❤️" },
-                { text: "¿Cuál es tu canción romántica favorita y por qué?", emoji: "❤️" },
-                { text: "¿Prefieres las muestras de cariño en público o en privado? ¿Por qué?", emoji: "❤️" },
-                { text: "¿Cómo fue la vez que te enamoraste de alguien que no esperabas?", emoji: "❤️" },
-                { text: "¿Qué significa para ti una relación saludable?", emoji: "❤️" },
-                { text: "¿Cuál ha sido el gesto más romántico que has hecho por alguien?", emoji: "❤️" },
-                { text: "¿Qué tipo de regalos sentimentales te gustan más?", emoji: "❤️" },
-                { text: "¿Cuál es la cualidad más atractiva que buscas en una pareja?", emoji: "❤️" },
-                { text: "¿Qué harías si te enamoras de alguien con quien no puedes estar?", emoji: "❤️" },
-                { text: "¿Qué importancia le das a la lealtad en una relación?", emoji: "❤️" },
-                { text: "Di algo que haga una persona que te genere confianza.", emoji: "❤️" },
-                { text: "Si solo pudieras vivir en una estación del año, ¿cuál sería?", emoji: "❤️" },
-                { text: "Si pudieras revivir un momento de tu vida, ¿cuál sería?", emoji: "❤️" },
-                { text: "¿Cuál es tu mayor complejo físico y qué es lo que más te gusta de ti?", emoji: "❤️" },
-                { text: "¿Cuál es el mejor recuerdo de tu infancia?", emoji: "❤️" },
-                { text: "¿Quién te inspira más?", emoji: "❤️" },
-                { text: "¿Qué es lo que valoras más de un amigo/a?", emoji: "❤️" },
-                { text: "¿Cómo te gustaría ser recordado/a?", emoji: "❤️" },
-                { text: "¿Cómo te sientes respecto a tu relación con tu madre?", emoji: "❤️" },
-                { text: "¿Qué dos adjetivos te definen mejor?", emoji: "❤️" },
-                { text: "¿Qué es lo que más echas de menos de tu infancia?", emoji: "❤️" },
-                { text: "¿Qué valoras más, la amistad o la pareja?", emoji: "❤️" },
-                { text: "¿Te consideras buena persona?", emoji: "❤️" },
-                { text: "Completa esta frase: Ojalá tuviera a alguien con quien compartir...", emoji: "❤️" },
-                { text: "Cuando algo no te apetece, ¿sabes poner límites?", emoji: "❤️" }
-            ],
-            hot: [
-                { text: "Si fueras invisible por un día, ¿qué harías?", emoji: "🔥" },
-                { text: "¿Cómo te consideras en la cama?", emoji: "🔥" },
-                { text: "¿Qué parte de tu cuerpo consideras más atractiva?", emoji: "🔥" },
-                { text: "¿Cuál es tu fantasía sexual más secreta?", emoji: "🔥" },
-                { text: "¿Cómo describirías la química perfecta entre dos personas?", emoji: "🔥" },
-                { text: "¿Qué opinas sobre el sexo sin compromiso?", emoji: "🔥" },
-                { text: "¿Cuál es tu juguete sexual favorito?", emoji: "🔥" },
-                { text: "¿Te gustaría probar cosas nuevas en la intimidad? ¿Qué tipo?", emoji: "🔥" },
-                { text: "¿Te consideras un buen amante? ¿Por qué?", emoji: "🔥" },
-                { text: "¿Qué harías si te tocaran un tema sexual incómodo?", emoji: "🔥" },
-                { text: "¿Cómo te gustaría explorar diferentes tipos de sexo?", emoji: "🔥" },
-                { text: "¿Cómo te sentirías si tu pareja te pidiera algo fuera de lo común en la intimidad?", emoji: "🔥" },
-                { text: "¿Hay alguna práctica que jamás harías en la cama?", emoji: "🔥" },
-                { text: "¿Cómo te sentirías si tuvieses que experimentar sexo en lugares públicos?", emoji: "🔥" },
-                { text: "¿Prefieres que la intimidad sea lenta o rápida? ¿Por qué?", emoji: "🔥" },
-                { text: "¿Has tenido alguna vez un sueño erótico? ¿Cómo fue?", emoji: "🔥" },
-                { text: "¿Qué es lo que más te excita en la intimidad?", emoji: "🔥" },
-                { text: "¿Qué opinas sobre las películas para adultos?", emoji: "🔥" },
-                { text: "¿Te consideras una persona atrevida en la intimidad? ¿Por qué?", emoji: "🔥" },
-                { text: "¿Cuál es tu fantasía sexual más atrevida?", emoji: "🔥" },
-                { text: "¿Qué piensas de la sexualidad abierta?", emoji: "🔥" },
-                { text: "¿Cómo te gustaría que fuera una noche de pasión perfecta?", emoji: "🔥" },
-                { text: "¿Prefieres el sexo suave o más intenso?", emoji: "🔥" },
-                { text: "¿Qué importancia le das a la atracción por personas del mismo sexo?", emoji: "🔥" },
-                { text: "¿Tienes alguna preferencia por algún tipo de ropa en la intimidad?", emoji: "🔥" },
-                { text: "¿Qué harías si un desconocido te hiciera una propuesta sexual?", emoji: "🔥" },
-                { text: "¿Cómo describirías una relación sexual ideal para ti?", emoji: "🔥" },
-                { text: "¿Prefieres tener sexo con emoción o relajado? ¿Por qué?", emoji: "🔥" },
-                { text: "¿Qué es lo que nunca te gustaría probar en la cama?", emoji: "🔥" },
-                { text: "¿Qué es lo que mejor se te da en la cama?", emoji: "🔥" },
-                { text: "¿Cuál es la parte que consideras más sexy de tu cuerpo?", emoji: "🔥" },
-                { text: "Si mañana pudieras levantarte disfrutando de una habilidad sexual nueva, ¿cuál sería?", emoji: "🔥" },
-                { text: "Di una cosa que creas tener en común sexualmente con les personas de la mesa.", emoji: "🔥" },
-                { text: "Si tuvieras que elegir ahora mismo un/a famoso/a para tener relaciones sexuales, ¿quién sería?", emoji: "🔥" },
-                { text: "¿Buscarías ayuda para corregir un problema sexual?", emoji: "🔥" },
-                { text: "¿Por qué aspecto de tu vida sexual sientes más gratitud?", emoji: "🔥" },
-                { text: "¿Cuándo fue la última vez que te masturbaste?", emoji: "🔥" },
-                { text: "¿Qué tipos de vídeos hot ves más?", emoji: "🔥" },
-                { text: "¿Has grabado alguna vez un video íntimo?", emoji: "🔥" },
-                { text: "¿Harías cibersexo?", emoji: "🔥" },
-                { text: "¿Qué es lo que más te gusta que te hagan en la cama?", emoji: "🔥" },
-                { text: "¿Cuál es la parte más sensible de tu cuerpo?", emoji: "🔥" },
-                { text: "¿Te consideras dominante/a en la cama?", emoji: "🔥" },
-                { text: "¿Has tenido relaciones sexuales con personas desconocidas?", emoji: "🔥" },
-                { text: "¿Cómo te sentirías si pillaras a tu pareja dándose autoplacer?", emoji: "🔥" }
-            ],
-            psycho: [
-                { text: "Si fueras rico/a, ¿qué harías con tu fortuna?", emoji: "🧠" },
-                { text: "Si pudieras tener cualquier superpoder, ¿cuál escogerías?", emoji: "🧠" },
-                { text: "Si pudieras teletransportarte, ¿a dónde irías?", emoji: "🧠" },
-                { text: "¿Cuál es tu mayor miedo y por qué?", emoji: "🧠" },
-                { text: "¿Cómo te gustaría morir?", emoji: "🧠" },
-                { text: "¿Cuál consideras que es el sentido de la vida?", emoji: "🧠" },
-                { text: "Si fueras un animal por un día, ¿cuál serías?", emoji: "🧠" },
-                { text: "¿Qué harías si pudieras hablar con los animales?", emoji: "🧠" },
-                { text: "¿Qué harías si fueras un niño otra vez por un día?", emoji: "🧠" },
-                { text: "¿Te has reído alguna vez en una situación inapropiada?", emoji: "🧠" },
-                { text: "Si pudieras ser famoso por algo ridículo, ¿qué harías?", emoji: "🧠" },
-                { text: "¿Qué opinas sobre el destino? ¿Crees que todo pasa por una razón?", emoji: "🧠" },
-                { text: "¿Qué harías si supieras que te queda solo un día de vida?", emoji: "🧠" },
-                { text: "¿Te gustaría saber cuándo vas a morir?", emoji: "🧠" },
-                { text: "¿Qué opinas sobre el concepto de libertad?", emoji: "🧠" },
-                { text: "¿Cuál es el mayor sacrificio que has hecho en tu vida?", emoji: "🧠" },
-                { text: "¿Crees que hay vida después de la muerte?", emoji: "🧠" },
-                { text: "¿Qué harías si tuvieras el poder de cambiar el mundo?", emoji: "🧠" },
-                { text: "¿Qué significa para ti la libertad?", emoji: "🧠" },
-                { text: "Si fueras una celebridad por un día, ¿qué harías?", emoji: "🧠" },
-                { text: "¿Cuál es la comida más rara que te gusta comer?", emoji: "🧠" },
-                { text: "Si pudieras vivir en una película, ¿cuál escogerías?", emoji: "🧠" },
-                { text: "¿Te atreverías a cantar en público en un karaoke?", emoji: "🧠" },
-                { text: "¿Cuál es el peor apodo que te han puesto?", emoji: "🧠" },
-                { text: "Si fueras un inventor, ¿qué inventarías?", emoji: "🧠" },
-                { text: "¿Qué harías si te encuentras con tu ‘yo’ del futuro?", emoji: "🧠" },
-                { text: "Si pudieras tener cualquier habilidad inútil, ¿cuál elegirías?", emoji: "🧠" },
-                { text: "¿Qué significa para ti la felicidad?", emoji: "🧠" },
-                { text: "¿Qué harías si pudieras cambiar un evento histórico?", emoji: "🧠" },
-                { text: "¿Te gustaría saber todos los secretos del universo?", emoji: "🧠" },
-                { text: "¿Qué es lo más valioso para ti en la vida?", emoji: "🧠" },
-                { text: "¿Qué piensas sobre el sufrimiento humano?", emoji: "🧠" },
-                { text: "¿Qué opinas sobre la religión?", emoji: "🧠" },
-                { text: "¿Qué cambiarías en la sociedad para mejorarla?", emoji: "🧠" },
-                { text: "¿Qué opinas sobre el destino y la suerte?", emoji: "🧠" },
-                { text: "Si murieras mañana, ¿qué harías hoy?", emoji: "🧠" },
-                { text: "¿Qué es lo más ridículo que has hecho estando borraxe?", emoji: "🧠" },
-                { text: "Di una cosa que cogerías y otra que descartarías de les integrantes de la mesa.", emoji: "🧠" },
-                { text: "¿Qué objeto salvarías de un incendio?", emoji: "🧠" },
-                { text: "¿Qué es lo que la mayoría de la gente suele pensar de ti?", emoji: "🧠" },
-                { text: "¿Cuándo fue la última vez que lloraste delante de alguien?", emoji: "🧠" },
-                { text: "¿Qué papel juegan los viajes en tu vida?", emoji: "🧠" },
-                { text: "¿Qué crees que es lo que más te ha marcado en tu infancia?", emoji: "🧠" },
-                { text: "Si no pudieras hacer lo que estás haciendo ahora, ¿cómo te gustaría ganarte la vida?", emoji: "🧠" },
-                { text: "¿Te gustaría ser famoso/a? ¿De qué forma?", emoji: "🧠" },
-                { text: "Di una frase para tu lápida.", emoji: "🧠" },
-                { text: "¿Qué querrías que se hiciera con tu cuerpo al morir?", emoji: "🧠" },
-                { text: "¿A qué personaje histórico te gustaría conocer?", emoji: "🧠" },
-                { text: "¿Con qué tipo de personas jamás te llevarías bien?", emoji: "🧠" },
-                { text: "¿Cuál consideras que sería la peor muerte de todas?", emoji: "🧠" },
-                { text: "¿Qué cambiarías de tu presente?", emoji: "🧠" },
-                { text: "¿Eres como quieres ser?", emoji: "🧠" },
-                { text: "¿En qué situación estarías dispuesto/a a mentir?", emoji: "🧠" },
-                { text: "Escoge un tatuaje tuyo o de alguien de la mesa y explica su significado.", emoji: "🧠" },
-                { text: "¿Qué sueles pensar cuando alguien se te queda mirando?", emoji: "🧠" },
-                { text: "¿Qué es lo primero que haces al despertar?", emoji: "🧠" },
-                { text: "¿Qué te parecería importante destacar en tu carta de presentación?", emoji: "🧠" },
-                { text: "¿Quién crees que tiene una idea errónea de cómo eres?", emoji: "🧠" },
-                { text: "¿Hay algo que te parezca demasiado serio como para no hacer bromas?", emoji: "🧠" },
-                { text: "¿Qué es lo más alocado que has hecho?", emoji: "🧠" },
-                { text: "¿A qué le tienes un miedo irracional?", emoji: "🧠" }
-            ]
+        // Preguntas resumidas para asegurar que carguen rápido
+        const QUESTIONS = {
+            chill: [{text: "¿Qué es lo que más valoras en una amistad?", emoji: "❤️"}, {text: "¿Cuál ha sido tu viaje favorito?", emoji: "✈️"}],
+            hot: [{text: "¿Qué es lo primero que te atrae de alguien?", emoji: "🔥"}, {text: "¿Cuál es tu zona más sensible?", emoji: "🔥"}],
+            psycho: [{text: "¿Cuál es el mayor secreto que guardas?", emoji: "🧠"}, {text: "¿Qué harías si hoy fuera el fin del mundo?", emoji: "🧠"}],
+            mix: []
         };
 
         window.selectMood = (mood, el) => {
@@ -293,25 +181,13 @@
             el.classList.add('selected');
         };
 
-        window.closeWinModal = () => {
-            document.getElementById('win-modal').classList.add('hidden');
-        };
-
-        const initAuth = async () => {
-            if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                await signInWithCustomToken(auth, __initial_auth_token);
-            } else {
-                await signInAnonymously(auth);
-            }
-        };
-
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 currentUser = user;
                 document.getElementById('splash-screen').classList.add('hidden');
                 document.getElementById('lobby-setup').classList.remove('hidden');
             } else {
-                initAuth();
+                signInAnonymously(auth);
             }
         });
 
@@ -320,15 +196,13 @@
             if (!name) return;
             isHost = true;
             currentRoomId = Math.random().toString(36).substring(2, 6).toUpperCase();
-            
             const roomRef = doc(db, 'artifacts', appId, 'public', 'data', 'rooms', currentRoomId);
             await setDoc(roomRef, {
                 host: currentUser.uid,
                 mood: selectedMood,
-                currentQuestion: { text: `Listo en modo ${selectedMood.toUpperCase()}`, emoji: "✨" },
+                currentQuestion: { text: "Preparando preguntas...", emoji: "✨" },
                 players: [{ uid: currentUser.uid, name, score: 0 }],
                 active: true,
-                winner: null,
                 turnIndex: 0
             });
             startRoomListener();
@@ -338,16 +212,12 @@
             const name = document.getElementById('user-nickname').value.trim();
             const roomId = document.getElementById('room-id-input').value.toUpperCase().trim();
             if (!name || !roomId) return;
-
             const roomRef = doc(db, 'artifacts', appId, 'public', 'data', 'rooms', roomId);
             const snap = await getDoc(roomRef);
-            if (snap.exists() && snap.data().active) {
+            if (snap.exists()) {
                 currentRoomId = roomId;
                 isHost = snap.data().host === currentUser.uid;
-                const players = snap.data().players;
-                if (!players.find(p => p.uid === currentUser.uid)) {
-                    await updateDoc(roomRef, { players: arrayUnion({ uid: currentUser.uid, name, score: 0 }) });
-                }
+                await updateDoc(roomRef, { players: arrayUnion({ uid: currentUser.uid, name, score: 0 }) });
                 startRoomListener();
             }
         };
@@ -356,109 +226,52 @@
             document.getElementById('lobby-setup').classList.add('hidden');
             document.getElementById('game-screen').classList.remove('hidden');
             document.getElementById('display-room-id').innerText = currentRoomId;
-            
             if (isHost) document.getElementById('host-controls').classList.remove('hidden');
 
-            if (unsubscribeRoom) unsubscribeRoom();
-            unsubscribeRoom = onSnapshot(doc(db, 'artifacts', appId, 'public', 'data', 'rooms', currentRoomId), (docSnap) => {
-                if (!docSnap.exists() || !docSnap.data().active) return;
-                const data = docSnap.data();
-                
-                const playersCount = data.players.length;
-                const activePlayer = data.players[data.turnIndex % playersCount] || data.players[0];
-                const turnText = activePlayer.uid === currentUser.uid ? "TU TURNO" : `TURNO DE: ${activePlayer.name}`;
-                document.getElementById('turn-indicator').innerText = turnText;
-                document.getElementById('turn-indicator').style.color = activePlayer.uid === currentUser.uid ? "#a855f7" : "rgba(255,255,255,0.4)";
-
-                if (data.winner && !hasWinnerShown) {
-                    document.getElementById('winner-name').innerText = data.winner;
-                    document.getElementById('win-modal').classList.remove('hidden');
-                    hasWinnerShown = true;
-                } else if (!data.winner) {
-                    hasWinnerShown = false;
-                }
-
-                const qText = document.getElementById('question');
-                if (qText.innerText !== data.currentQuestion.text) {
-                    document.getElementById('q-container').classList.add('animate-shake');
-                    setTimeout(() => document.getElementById('q-container').classList.remove('animate-shake'), 400);
-                    qText.innerText = data.currentQuestion.text;
-                    document.getElementById('emoji').innerText = data.currentQuestion.emoji;
-                }
-                updateScoresUI(data.players);
+            unsubscribeRoom = onSnapshot(doc(db, 'artifacts', appId, 'public', 'data', 'rooms', currentRoomId), (s) => {
+                const d = s.data();
+                if (!d) return;
+                const turnPlayer = d.players[d.turnIndex % d.players.length];
+                document.getElementById('turn-indicator').innerText = turnPlayer.uid === currentUser.uid ? "TU TURNO" : `TURNO: ${turnPlayer.name}`;
+                document.getElementById('question').innerText = d.currentQuestion.text;
+                document.getElementById('emoji').innerText = d.currentQuestion.emoji;
+                updateScores(d.players);
             });
         }
 
-        async function getNewQuestion(mood) {
-            let pool = [];
-            if (mood === 'mix') {
-                pool = [...DATABASE.chill, ...DATABASE.hot, ...DATABASE.psycho];
-            } else {
-                pool = DATABASE[mood];
-            }
-            return pool[Math.floor(Math.random() * pool.length)];
-        }
-
-        document.getElementById('new-question').onclick = async () => {
-            const roomRef = doc(db, 'artifacts', appId, 'public', 'data', 'rooms', currentRoomId);
-            const snap = await getDoc(roomRef);
-            const data = snap.data();
-            const nextQ = await getNewQuestion(data.mood);
-            await updateDoc(roomRef, { 
-                currentQuestion: nextQ,
-                turnIndex: data.turnIndex + 1
-            });
-        };
-
-        document.getElementById('btn-skip').onclick = async () => {
-            const roomRef = doc(db, 'artifacts', appId, 'public', 'data', 'rooms', currentRoomId);
-            const snap = await getDoc(roomRef);
-            const nextQ = await getNewQuestion(snap.data().mood);
-            await updateDoc(roomRef, { currentQuestion: nextQ });
-        };
-
-        document.getElementById('btn-reset').onclick = async () => {
-            const roomRef = doc(db, 'artifacts', appId, 'public', 'data', 'rooms', currentRoomId);
-            const snap = await getDoc(roomRef);
-            const players = snap.data().players.map(p => ({ ...p, score: 0 }));
-            await updateDoc(roomRef, { players, winner: null, turnIndex: 0 });
-        };
-
-        function updateScoresUI(players) {
-            document.getElementById('player-scores').innerHTML = players.map((p) => `
-                <div class="bg-white/5 p-4 rounded-2xl border ${p.uid === currentUser.uid ? 'border-purple-500/50' : 'border-white/5'}">
-                    <div class="flex justify-between items-center mb-2 text-[9px] font-bold uppercase tracking-widest">
-                        <span>${p.name}</span>
-                        <div class="flex items-center space-x-4">
-                            ${p.uid === currentUser.uid ? `
-                                <button onclick="window.changeScore(-10)" class="w-8 h-8 bg-white/10 rounded-xl flex items-center justify-center">－</button>
-                                <span class="text-lg w-6 text-center">${p.score}</span>
-                                <button onclick="window.changeScore(10)" class="w-8 h-8 bg-white/10 rounded-xl flex items-center justify-center">＋</button>
-                            ` : `<span class="text-lg">${p.score}</span>`}
+        function updateScores(players) {
+            document.getElementById('player-scores').innerHTML = players.map(p => `
+                <div class="bg-white/5 p-4 rounded-2xl border ${p.uid === currentUser.uid ? 'border-purple-500' : 'border-white/5'}">
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="text-[10px] font-bold uppercase tracking-widest">${p.name}</span>
+                        <div class="flex items-center space-x-3">
+                            ${p.uid === currentUser.uid ? `<button onclick="window.changeScore(-5)" class="text-lg opacity-40">－</button>
+                            <span class="text-lg font-bold">${p.score}</span>
+                            <button onclick="window.changeScore(5)" class="text-lg text-purple-400">＋</button>` : `<span class="text-lg">${p.score}</span>`}
                         </div>
                     </div>
-                    <div class="w-full bg-black h-1 rounded-full overflow-hidden">
-                        <div class="bg-purple-500 h-full transition-all duration-700 ${p.score >= 100 ? 'bg-yellow-400' : ''}" style="width:${p.score}%"></div>
-                    </div>
+                    <div class="w-full bg-white/5 h-1 rounded-full"><div class="bg-purple-500 h-full transition-all" style="width:${p.score}%"></div></div>
                 </div>
             `).join('');
         }
 
-        window.changeScore = async (delta) => {
-            const roomRef = doc(db, 'artifacts', appId, 'public', 'data', 'rooms', currentRoomId);
-            const snap = await getDoc(roomRef);
-            let winnerName = snap.data().winner;
+        window.changeScore = async (v) => {
+            const r = doc(db, 'artifacts', appId, 'public', 'data', 'rooms', currentRoomId);
+            const snap = await getDoc(r);
             const players = snap.data().players.map(p => {
-                if (p.uid === currentUser.uid) {
-                    p.score = Math.max(0, Math.min(100, p.score + delta));
-                    if (p.score === 100) winnerName = p.name;
-                }
+                if(p.uid === currentUser.uid) p.score = Math.max(0, Math.min(100, p.score + v));
                 return p;
             });
-            await updateDoc(roomRef, { players, winner: winnerName });
+            await updateDoc(r, { players });
         };
 
-        document.getElementById('btn-exit').onclick = () => window.location.reload();
+        document.getElementById('new-question').onclick = async () => {
+            const r = doc(db, 'artifacts', appId, 'public', 'data', 'rooms', currentRoomId);
+            const snap = await getDoc(r);
+            const pool = QUESTIONS[snap.data().mood] || QUESTIONS.chill;
+            const q = pool[Math.floor(Math.random() * pool.length)];
+            await updateDoc(r, { currentQuestion: q, turnIndex: snap.data().turnIndex + 1 });
+        };
     </script>
 </body>
 </html>
