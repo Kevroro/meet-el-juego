@@ -19,8 +19,6 @@
         body { font-family: 'Comfortaa', sans-serif; -webkit-tap-highlight-color: transparent; display: flex; flex-direction: column; }
         .font-caveat { font-family: 'Caveat', cursive; }
         .question-box { background: linear-gradient(145deg, #0d1e75, #9a18a4); min-height: 42vh; display: flex; flex-direction: column; justify-content: center; transition: all 0.3s ease; }
-        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
-        .animate-shake { animation: shake 0.2s ease-in-out 2; }
         @keyframes zoomIn { 0% { opacity: 0; transform: scale(0.95); } 100% { opacity: 1; transform: scale(1); } }
         .animate-zoom-in { animation: zoomIn 0.3s ease-out forwards; }
         .hidden { display: none !important; }
@@ -33,11 +31,13 @@
 </head>
 <body class="text-white">
 
-    <!-- Splash Screen con logoblanco.png -->
-    <div id="splash-screen" class="fixed inset-0 flex items-center justify-center bg-white z-50">
+    <!-- Splash Screen -->
+    <div id="splash-screen" class="fixed inset-0 flex items-center justify-center bg-white z-50 transition-opacity duration-500">
         <div class="flex flex-col items-center text-center px-6">
              <div class="w-32 h-32 mb-6 flex items-center justify-center">
-                <img src="logoblanco.png" alt="MEET" class="max-w-full max-h-full object-contain" onerror="this.src='logo.png'; this.onerror=()=>this.parentElement.innerHTML='<div class=\'w-24 h-24 bg-black rounded-full flex items-center justify-center text-white font-bold animate-pulse text-2xl\'>MEET</div>'">
+                <!-- Intento de carga en cascada: logoblanco -> logo -> fallback texto -->
+                <img id="splash-logo" src="logoblanco.png" alt="MEET" class="max-w-full max-h-full object-contain" 
+                     onerror="this.onerror=null; this.src='logo.png'; this.parentElement.innerHTML='<div class=\'w-24 h-24 bg-black rounded-full flex items-center justify-center text-white font-bold animate-pulse text-2xl\'>MEET</div>'">
              </div>
              <p id="splash-text" class="text-black font-caveat text-3xl">Cargando catálogo...</p>
         </div>
@@ -147,131 +147,157 @@
         import { getFirestore, doc, setDoc, getDoc, onSnapshot, updateDoc, arrayUnion } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
         import { getAuth, signInAnonymously, onAuthStateChanged, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
 
+        const splash = document.getElementById('splash-screen');
+        const lobby = document.getElementById('lobby-setup');
+
+        // Función para quitar la pantalla de carga pase lo que pase
+        const hideSplash = () => {
+            splash.classList.add('opacity-0');
+            setTimeout(() => {
+                splash.classList.add('hidden');
+                lobby.classList.remove('hidden');
+            }, 500);
+        };
+
         const getFirebaseConfig = () => {
             try {
-                if (typeof __firebase_config !== 'undefined') return JSON.parse(__firebase_config);
+                if (typeof __firebase_config !== 'undefined' && __firebase_config) return JSON.parse(__firebase_config);
             } catch (e) {}
             return null;
         };
 
         const config = getFirebaseConfig();
         if (!config) {
-            document.getElementById('splash-text').innerHTML = "Configuración faltante.<br><span class='text-[10px] uppercase tracking-widest opacity-50'>Verifica las variables de entorno</span>";
-            throw new Error("Missing Firebase Config");
-        }
+            document.getElementById('splash-text').innerHTML = "Error de Configuración<br><span class='text-[10px] opacity-50 uppercase'>Faltan las variables de entorno</span>";
+            // Quitamos el splash de todos modos para ver el UI aunque no funcione el backend
+            setTimeout(hideSplash, 3000);
+        } else {
+            const app = initializeApp(config);
+            const db = getFirestore(app);
+            const auth = getAuth(app);
+            const appId = typeof __app_id !== 'undefined' ? __app_id : 'meet-v1';
 
-        const app = initializeApp(config);
-        const db = getFirestore(app);
-        const auth = getAuth(app);
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'meet-v1';
+            let currentRoomId = null, currentUser = null, isHost = false, selectedMood = 'chill', unsubscribeRoom = null;
 
-        let currentRoomId = null, currentUser = null, isHost = false, selectedMood = 'chill', unsubscribeRoom = null;
+            const QUESTIONS = {
+                chill: [{text: "¿Qué es lo que más valoras en una amistad?", emoji: "❤️"}, {text: "¿Cuál ha sido tu viaje favorito?", emoji: "✈️"}],
+                hot: [{text: "¿Qué es lo primero que te atrae de alguien?", emoji: "🔥"}, {text: "¿Cuál es tu zona más sensible?", emoji: "🔥"}],
+                psycho: [{text: "¿Cuál es el mayor secreto que guardas?", emoji: "🧠"}, {text: "¿Qué harías si hoy fuera el fin del mundo?", emoji: "🧠"}],
+                mix: []
+            };
 
-        // Preguntas resumidas para asegurar que carguen rápido
-        const QUESTIONS = {
-            chill: [{text: "¿Qué es lo que más valoras en una amistad?", emoji: "❤️"}, {text: "¿Cuál ha sido tu viaje favorito?", emoji: "✈️"}],
-            hot: [{text: "¿Qué es lo primero que te atrae de alguien?", emoji: "🔥"}, {text: "¿Cuál es tu zona más sensible?", emoji: "🔥"}],
-            psycho: [{text: "¿Cuál es el mayor secreto que guardas?", emoji: "🧠"}, {text: "¿Qué harías si hoy fuera el fin del mundo?", emoji: "🧠"}],
-            mix: []
-        };
+            window.selectMood = (mood, el) => {
+                selectedMood = mood;
+                document.querySelectorAll('.mood-card').forEach(c => c.classList.remove('selected'));
+                el.classList.add('selected');
+            };
 
-        window.selectMood = (mood, el) => {
-            selectedMood = mood;
-            document.querySelectorAll('.mood-card').forEach(c => c.classList.remove('selected'));
-            el.classList.add('selected');
-        };
-
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                currentUser = user;
-                document.getElementById('splash-screen').classList.add('hidden');
-                document.getElementById('lobby-setup').classList.remove('hidden');
-            } else {
-                signInAnonymously(auth);
-            }
-        });
-
-        document.getElementById('btn-create-room').onclick = async () => {
-            const name = document.getElementById('user-nickname').value.trim();
-            if (!name) return;
-            isHost = true;
-            currentRoomId = Math.random().toString(36).substring(2, 6).toUpperCase();
-            const roomRef = doc(db, 'artifacts', appId, 'public', 'data', 'rooms', currentRoomId);
-            await setDoc(roomRef, {
-                host: currentUser.uid,
-                mood: selectedMood,
-                currentQuestion: { text: "Preparando preguntas...", emoji: "✨" },
-                players: [{ uid: currentUser.uid, name, score: 0 }],
-                active: true,
-                turnIndex: 0
+            // Listener de Auth
+            onAuthStateChanged(auth, (user) => {
+                if (user) {
+                    currentUser = user;
+                    hideSplash();
+                } else {
+                    // Intento de login anónimo si no hay sesión
+                    signInAnonymously(auth).catch(() => {
+                        // Si falla Firebase, mostramos el lobby igual para no bloquear al usuario
+                        hideSplash();
+                    });
+                }
             });
-            startRoomListener();
-        };
 
-        document.getElementById('btn-join-room').onclick = async () => {
-            const name = document.getElementById('user-nickname').value.trim();
-            const roomId = document.getElementById('room-id-input').value.toUpperCase().trim();
-            if (!name || !roomId) return;
-            const roomRef = doc(db, 'artifacts', appId, 'public', 'data', 'rooms', roomId);
-            const snap = await getDoc(roomRef);
-            if (snap.exists()) {
-                currentRoomId = roomId;
-                isHost = snap.data().host === currentUser.uid;
-                await updateDoc(roomRef, { players: arrayUnion({ uid: currentUser.uid, name, score: 0 }) });
-                startRoomListener();
+            // Timer de seguridad: si en 6 segundos no ha cargado, forzamos entrada
+            setTimeout(() => {
+                if (!splash.classList.contains('hidden')) hideSplash();
+            }, 6000);
+
+            // Lógica de juego...
+            document.getElementById('btn-create-room').onclick = async () => {
+                const name = document.getElementById('user-nickname').value.trim();
+                if (!name || !currentUser) return;
+                isHost = true;
+                currentRoomId = Math.random().toString(36).substring(2, 6).toUpperCase();
+                const roomRef = doc(db, 'artifacts', appId, 'public', 'data', 'rooms', currentRoomId);
+                await setDoc(roomRef, {
+                    host: currentUser.uid,
+                    mood: selectedMood,
+                    currentQuestion: { text: "Preparando preguntas...", emoji: "✨" },
+                    players: [{ uid: currentUser.uid, name, score: 0 }],
+                    active: true,
+                    turnIndex: 0
+                });
+                startRoomListener(db, appId);
+            };
+
+            document.getElementById('btn-join-room').onclick = async () => {
+                const name = document.getElementById('user-nickname').value.trim();
+                const roomId = document.getElementById('room-id-input').value.toUpperCase().trim();
+                if (!name || !roomId || !currentUser) return;
+                const roomRef = doc(db, 'artifacts', appId, 'public', 'data', 'rooms', roomId);
+                const snap = await getDoc(roomRef);
+                if (snap.exists()) {
+                    currentRoomId = roomId;
+                    isHost = snap.data().host === currentUser.uid;
+                    await updateDoc(roomRef, { players: arrayUnion({ uid: currentUser.uid, name, score: 0 }) });
+                    startRoomListener(db, appId);
+                }
+            };
+
+            function startRoomListener(db, appId) {
+                document.getElementById('lobby-setup').classList.add('hidden');
+                document.getElementById('game-screen').classList.remove('hidden');
+                document.getElementById('display-room-id').innerText = currentRoomId;
+                if (isHost) document.getElementById('host-controls').classList.remove('hidden');
+
+                unsubscribeRoom = onSnapshot(doc(db, 'artifacts', appId, 'public', 'data', 'rooms', currentRoomId), (s) => {
+                    const d = s.data();
+                    if (!d) return;
+                    const turnPlayer = d.players[d.turnIndex % d.players.length];
+                    document.getElementById('turn-indicator').innerText = turnPlayer.uid === currentUser.uid ? "TU TURNO" : `TURNO: ${turnPlayer.name}`;
+                    document.getElementById('question').innerText = d.currentQuestion.text;
+                    document.getElementById('emoji').innerText = d.currentQuestion.emoji;
+                    updateScores(d.players, db, appId);
+                });
             }
-        };
 
-        function startRoomListener() {
-            document.getElementById('lobby-setup').classList.add('hidden');
-            document.getElementById('game-screen').classList.remove('hidden');
-            document.getElementById('display-room-id').innerText = currentRoomId;
-            if (isHost) document.getElementById('host-controls').classList.remove('hidden');
-
-            unsubscribeRoom = onSnapshot(doc(db, 'artifacts', appId, 'public', 'data', 'rooms', currentRoomId), (s) => {
-                const d = s.data();
-                if (!d) return;
-                const turnPlayer = d.players[d.turnIndex % d.players.length];
-                document.getElementById('turn-indicator').innerText = turnPlayer.uid === currentUser.uid ? "TU TURNO" : `TURNO: ${turnPlayer.name}`;
-                document.getElementById('question').innerText = d.currentQuestion.text;
-                document.getElementById('emoji').innerText = d.currentQuestion.emoji;
-                updateScores(d.players);
-            });
-        }
-
-        function updateScores(players) {
-            document.getElementById('player-scores').innerHTML = players.map(p => `
-                <div class="bg-white/5 p-4 rounded-2xl border ${p.uid === currentUser.uid ? 'border-purple-500' : 'border-white/5'}">
-                    <div class="flex justify-between items-center mb-2">
-                        <span class="text-[10px] font-bold uppercase tracking-widest">${p.name}</span>
-                        <div class="flex items-center space-x-3">
-                            ${p.uid === currentUser.uid ? `<button onclick="window.changeScore(-5)" class="text-lg opacity-40">－</button>
-                            <span class="text-lg font-bold">${p.score}</span>
-                            <button onclick="window.changeScore(5)" class="text-lg text-purple-400">＋</button>` : `<span class="text-lg">${p.score}</span>`}
+            function updateScores(players, db, appId) {
+                document.getElementById('player-scores').innerHTML = players.map(p => `
+                    <div class="bg-white/5 p-4 rounded-2xl border ${p.uid === currentUser.uid ? 'border-purple-500' : 'border-white/5'}">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-[10px] font-bold uppercase tracking-widest">${p.name}</span>
+                            <div class="flex items-center space-x-3">
+                                ${p.uid === currentUser.uid ? `<button data-score="-5" class="score-btn text-lg opacity-40">－</button>
+                                <span class="text-lg font-bold">${p.score}</span>
+                                <button data-score="5" class="score-btn text-lg text-purple-400">＋</button>` : `<span class="text-lg">${p.score}</span>`}
+                            </div>
                         </div>
+                        <div class="w-full bg-white/5 h-1 rounded-full"><div class="bg-purple-500 h-full transition-all" style="width:${p.score}%"></div></div>
                     </div>
-                    <div class="w-full bg-white/5 h-1 rounded-full"><div class="bg-purple-500 h-full transition-all" style="width:${p.score}%"></div></div>
-                </div>
-            `).join('');
+                `).join('');
+
+                document.querySelectorAll('.score-btn').forEach(btn => {
+                    btn.onclick = () => window.changeScore(parseInt(btn.dataset.score), db, appId);
+                });
+            }
+
+            window.changeScore = async (v, db, appId) => {
+                const r = doc(db, 'artifacts', appId, 'public', 'data', 'rooms', currentRoomId);
+                const snap = await getDoc(r);
+                const players = snap.data().players.map(p => {
+                    if(p.uid === currentUser.uid) p.score = Math.max(0, Math.min(100, p.score + v));
+                    return p;
+                });
+                await updateDoc(r, { players });
+            };
+
+            document.getElementById('new-question').onclick = async () => {
+                const r = doc(db, 'artifacts', appId, 'public', 'data', 'rooms', currentRoomId);
+                const snap = await getDoc(r);
+                const pool = QUESTIONS[snap.data().mood] || QUESTIONS.chill;
+                const q = pool[Math.floor(Math.random() * pool.length)];
+                await updateDoc(r, { currentQuestion: q, turnIndex: snap.data().turnIndex + 1 });
+            };
         }
-
-        window.changeScore = async (v) => {
-            const r = doc(db, 'artifacts', appId, 'public', 'data', 'rooms', currentRoomId);
-            const snap = await getDoc(r);
-            const players = snap.data().players.map(p => {
-                if(p.uid === currentUser.uid) p.score = Math.max(0, Math.min(100, p.score + v));
-                return p;
-            });
-            await updateDoc(r, { players });
-        };
-
-        document.getElementById('new-question').onclick = async () => {
-            const r = doc(db, 'artifacts', appId, 'public', 'data', 'rooms', currentRoomId);
-            const snap = await getDoc(r);
-            const pool = QUESTIONS[snap.data().mood] || QUESTIONS.chill;
-            const q = pool[Math.floor(Math.random() * pool.length)];
-            await updateDoc(r, { currentQuestion: q, turnIndex: snap.data().turnIndex + 1 });
-        };
     </script>
 </body>
 </html>
