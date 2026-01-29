@@ -35,39 +35,10 @@
     <div id="splash-screen" class="fixed inset-0 flex items-center justify-center bg-white z-50 transition-opacity duration-500">
         <div class="flex flex-col items-center text-center px-6">
              <div class="w-32 h-32 mb-6 flex items-center justify-center">
-                <!-- Intento de carga en cascada: logoblanco -> logo -> fallback texto -->
                 <img id="splash-logo" src="logoblanco.png" alt="MEET" class="max-w-full max-h-full object-contain" 
                      onerror="this.onerror=null; this.src='logo.png'; this.parentElement.innerHTML='<div class=\'w-24 h-24 bg-black rounded-full flex items-center justify-center text-white font-bold animate-pulse text-2xl\'>MEET</div>'">
              </div>
              <p id="splash-text" class="text-black font-caveat text-3xl">Cargando catálogo...</p>
-        </div>
-    </div>
-
-    <!-- Modal de Instrucciones -->
-    <div id="info-modal" class="hidden fixed inset-0 flex items-center justify-center z-[110] bg-black/95 p-6 animate-zoom-in">
-        <div class="max-w-xs text-center">
-            <h3 class="text-3xl font-caveat mb-4 text-purple-400">Cómo jugar</h3>
-            <ul class="text-[11px] text-left space-y-4 opacity-80 tracking-wide leading-relaxed">
-                <li>• <b>CREA</b> una sala y comparte el código.</li>
-                <li>• <b>ELIGE</b> el mood según el ambiente.</li>
-                <li>• <b>RESPONDE</b> con honestidad o bebe (tú pones las reglas).</li>
-                <li>• <b>PUNTÚA</b> deslizando los controles de tu marcador.</li>
-                <li>• <b>GANA</b> el primero en llegar a 100.</li>
-            </ul>
-            <div class="flex flex-col space-y-3 mt-8">
-                <button onclick="document.getElementById('info-modal').classList.add('hidden')" class="border border-white/20 px-8 py-3 rounded-full text-[10px] uppercase tracking-widest">Cerrar</button>
-                <a href="instrucciones.html" target="_blank" class="text-[9px] uppercase tracking-widest text-white/40 underline">Ver guía completa en HTML</a>
-            </div>
-        </div>
-    </div>
-
-    <!-- Victoria -->
-    <div id="win-modal" class="hidden fixed inset-0 flex items-center justify-center z-[100] bg-black/90 p-6 animate-zoom-in">
-        <div class="text-center">
-            <div class="text-8xl mb-6">🏆</div>
-            <h2 class="text-4xl font-caveat mb-2 text-white">¡Victoria!</h2>
-            <p id="winner-name" class="text-xl font-bold text-purple-400 mb-6 uppercase tracking-widest">ALGUIEN</p>
-            <button onclick="document.getElementById('win-modal').classList.add('hidden')" class="bg-white text-black font-bold py-4 px-12 rounded-full text-[10px] uppercase active:scale-95 transition-all">Seguir jugando</button>
         </div>
     </div>
 
@@ -81,11 +52,6 @@
         <div class="w-full max-w-xs space-y-4">
             <input id="user-nickname" type="text" class="w-full bg-white/10 text-white px-6 py-4 rounded-2xl border border-white/20 text-center outline-none focus:border-purple-500 transition-colors" placeholder="Tu apodo">
             
-            <div class="flex justify-between items-center px-2">
-                <p class="text-[9px] uppercase tracking-widest opacity-40">Modo de juego</p>
-                <button onclick="document.getElementById('info-modal').classList.remove('hidden')" class="text-[9px] uppercase tracking-widest text-purple-400 font-bold">Ayuda</button>
-            </div>
-
             <div id="mood-selector" class="grid grid-cols-4 gap-2">
                 <button onclick="selectMood('chill', this)" class="mood-card selected p-2 rounded-xl flex flex-col items-center">
                     <span class="text-lg">❤️</span>
@@ -122,35 +88,27 @@
             <button onclick="window.location.reload()" class="text-white/20 uppercase text-[10px] tracking-widest font-bold">Salir</button>
             <div id="display-room-id" class="text-[10px] font-bold bg-white/5 px-4 py-2 rounded-full border border-white/10 text-purple-400 tracking-[0.2em]">----</div>
         </div>
-
         <div id="turn-indicator" class="text-[10px] uppercase tracking-[0.3em] font-bold text-white/40 bg-white/5 px-6 py-2 rounded-full border border-white/5">Esperando...</div>
-
         <div id="q-container" class="question-box w-full max-w-sm p-8 rounded-[3rem] shadow-2xl text-center relative mx-4 border border-white/10">
             <div id="emoji" class="text-6xl mb-6 drop-shadow-lg">✨</div>
             <div class="flex-1 flex items-center justify-center min-h-[140px]">
-                <p id="question" class="text-2xl md:text-3xl font-caveat leading-tight px-2 text-white">Cargando catálogo...</p>
+                <p id="question" class="text-2xl md:text-3xl font-caveat leading-tight px-2 text-white">¡Bienvenido!</p>
             </div>
-            
             <div id="host-controls" class="mt-8 hidden flex flex-col items-center space-y-4">
-                <div class="flex space-x-2 w-full justify-center">
-                    <button id="btn-skip" class="bg-white/10 text-white/60 font-bold py-4 px-6 rounded-full active:scale-90 text-[9px] tracking-[0.2em]">SALTAR</button>
-                    <button id="new-question" class="bg-white text-black font-bold py-4 px-10 rounded-full shadow-2xl active:scale-90 text-[9px] tracking-[0.2em]">SIGUIENTE</button>
-                </div>
+                <button id="new-question" class="bg-white text-black font-bold py-4 px-10 rounded-full shadow-2xl active:scale-90 text-[9px] tracking-[0.2em]">SIGUIENTE PREGUNTA</button>
             </div>
         </div>
-
         <div id="player-scores" class="w-full max-w-sm space-y-3 overflow-y-auto max-h-[25vh] mt-8 px-2 scrollbar-hide"></div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getFirestore, doc, setDoc, getDoc, onSnapshot, updateDoc, arrayUnion } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-        import { getAuth, signInAnonymously, onAuthStateChanged, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
 
         const splash = document.getElementById('splash-screen');
         const lobby = document.getElementById('lobby-setup');
 
-        // Función para quitar la pantalla de carga pase lo que pase
         const hideSplash = () => {
             splash.classList.add('opacity-0');
             setTimeout(() => {
@@ -159,30 +117,31 @@
             }, 500);
         };
 
-        const getFirebaseConfig = () => {
-            try {
-                if (typeof __firebase_config !== 'undefined' && __firebase_config) return JSON.parse(__firebase_config);
-            } catch (e) {}
-            return null;
-        };
+        // Forzamos entrada en 3 segundos si Firebase no responde
+        setTimeout(hideSplash, 3000);
 
-        const config = getFirebaseConfig();
-        if (!config) {
-            document.getElementById('splash-text').innerHTML = "Error de Configuración<br><span class='text-[10px] opacity-50 uppercase'>Faltan las variables de entorno</span>";
-            // Quitamos el splash de todos modos para ver el UI aunque no funcione el backend
-            setTimeout(hideSplash, 3000);
-        } else {
+        let config = null;
+        try {
+            // Buscamos la config en las variables globales que inyecta el entorno
+            if (typeof __firebase_config !== 'undefined') {
+                config = JSON.parse(__firebase_config);
+            }
+        } catch (e) {
+            console.error("Config error:", e);
+        }
+
+        if (config) {
             const app = initializeApp(config);
             const db = getFirestore(app);
             const auth = getAuth(app);
-            const appId = typeof __app_id !== 'undefined' ? __app_id : 'meet-v1';
+            const appId = typeof __app_id !== 'undefined' ? __app_id : 'meet-app-v1';
 
             let currentRoomId = null, currentUser = null, isHost = false, selectedMood = 'chill', unsubscribeRoom = null;
 
             const QUESTIONS = {
-                chill: [{text: "¿Qué es lo que más valoras en una amistad?", emoji: "❤️"}, {text: "¿Cuál ha sido tu viaje favorito?", emoji: "✈️"}],
-                hot: [{text: "¿Qué es lo primero que te atrae de alguien?", emoji: "🔥"}, {text: "¿Cuál es tu zona más sensible?", emoji: "🔥"}],
-                psycho: [{text: "¿Cuál es el mayor secreto que guardas?", emoji: "🧠"}, {text: "¿Qué harías si hoy fuera el fin del mundo?", emoji: "🧠"}],
+                chill: [{text: "¿Cuál es tu mejor recuerdo de infancia?", emoji: "❤️"}, {text: "¿Qué viaje repetirías mil veces?", emoji: "✈️"}],
+                hot: [{text: "¿Qué es lo más atrevido que has hecho?", emoji: "🔥"}, {text: "¿Cuál es tu mayor fantasía?", emoji: "🔥"}],
+                psycho: [{text: "¿Qué harías si fueras invisible un día?", emoji: "🧠"}, {text: "¿Cuál es tu mayor miedo?", emoji: "🧠"}],
                 mix: []
             };
 
@@ -192,26 +151,15 @@
                 el.classList.add('selected');
             };
 
-            // Listener de Auth
             onAuthStateChanged(auth, (user) => {
                 if (user) {
                     currentUser = user;
                     hideSplash();
                 } else {
-                    // Intento de login anónimo si no hay sesión
-                    signInAnonymously(auth).catch(() => {
-                        // Si falla Firebase, mostramos el lobby igual para no bloquear al usuario
-                        hideSplash();
-                    });
+                    signInAnonymously(auth).catch(hideSplash);
                 }
             });
 
-            // Timer de seguridad: si en 6 segundos no ha cargado, forzamos entrada
-            setTimeout(() => {
-                if (!splash.classList.contains('hidden')) hideSplash();
-            }, 6000);
-
-            // Lógica de juego...
             document.getElementById('btn-create-room').onclick = async () => {
                 const name = document.getElementById('user-nickname').value.trim();
                 if (!name || !currentUser) return;
@@ -221,9 +169,8 @@
                 await setDoc(roomRef, {
                     host: currentUser.uid,
                     mood: selectedMood,
-                    currentQuestion: { text: "Preparando preguntas...", emoji: "✨" },
+                    currentQuestion: { text: "Pulsa Siguiente para empezar", emoji: "✨" },
                     players: [{ uid: currentUser.uid, name, score: 0 }],
-                    active: true,
                     turnIndex: 0
                 });
                 startRoomListener(db, appId);
@@ -266,21 +213,20 @@
                         <div class="flex justify-between items-center mb-2">
                             <span class="text-[10px] font-bold uppercase tracking-widest">${p.name}</span>
                             <div class="flex items-center space-x-3">
-                                ${p.uid === currentUser.uid ? `<button data-score="-5" class="score-btn text-lg opacity-40">－</button>
+                                ${p.uid === currentUser.uid ? `<button data-val="-5" class="score-adj text-lg opacity-40">－</button>
                                 <span class="text-lg font-bold">${p.score}</span>
-                                <button data-score="5" class="score-btn text-lg text-purple-400">＋</button>` : `<span class="text-lg">${p.score}</span>`}
+                                <button data-val="5" class="score-adj text-lg text-purple-400">＋</button>` : `<span class="text-lg">${p.score}</span>`}
                             </div>
                         </div>
                         <div class="w-full bg-white/5 h-1 rounded-full"><div class="bg-purple-500 h-full transition-all" style="width:${p.score}%"></div></div>
                     </div>
                 `).join('');
-
-                document.querySelectorAll('.score-btn').forEach(btn => {
-                    btn.onclick = () => window.changeScore(parseInt(btn.dataset.score), db, appId);
+                document.querySelectorAll('.score-adj').forEach(b => {
+                    b.onclick = () => changeScore(parseInt(b.dataset.val), db, appId);
                 });
             }
 
-            window.changeScore = async (v, db, appId) => {
+            async function changeScore(v, db, appId) {
                 const r = doc(db, 'artifacts', appId, 'public', 'data', 'rooms', currentRoomId);
                 const snap = await getDoc(r);
                 const players = snap.data().players.map(p => {
@@ -288,7 +234,7 @@
                     return p;
                 });
                 await updateDoc(r, { players });
-            };
+            }
 
             document.getElementById('new-question').onclick = async () => {
                 const r = doc(db, 'artifacts', appId, 'public', 'data', 'rooms', currentRoomId);
@@ -297,6 +243,9 @@
                 const q = pool[Math.floor(Math.random() * pool.length)];
                 await updateDoc(r, { currentQuestion: q, turnIndex: snap.data().turnIndex + 1 });
             };
+        } else {
+            // Si no hay config, forzamos el paso al lobby para que al menos veas el diseño
+            setTimeout(hideSplash, 1000);
         }
     </script>
 </body>
