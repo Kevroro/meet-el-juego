@@ -1,252 +1,507 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Meet - Experience</title>
-    
-    <!-- Favicons y Manifest -->
-    <link rel="icon" type="image/png" href="favicon.png">
-    <link rel="apple-touch-icon" href="favicon2.png">
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#000000">
-
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="Mi Juego">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <link rel="apple-touch-icon" href="favicon2.png">
+    <link rel="icon" href="favicon.png" type="image/png">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meet</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Caveat&family=Comfortaa:wght@300;400;500&display=swap" rel="stylesheet">
-    <style>
-        :root { --bg-dark: #000000; }
-        html, body { height: 100%; width: 100%; margin: 0; padding: 0; background-color: var(--bg-dark); overflow: hidden; position: fixed; }
-        body { font-family: 'Comfortaa', sans-serif; -webkit-tap-highlight-color: transparent; display: flex; flex-direction: column; }
-        .font-caveat { font-family: 'Caveat', cursive; }
-        .question-box { background: linear-gradient(145deg, #0d1e75, #9a18a4); min-height: 42vh; display: flex; flex-direction: column; justify-content: center; transition: all 0.3s ease; }
-        @keyframes zoomIn { 0% { opacity: 0; transform: scale(0.95); } 100% { opacity: 1; transform: scale(1); } }
-        .animate-zoom-in { animation: zoomIn 0.3s ease-out forwards; }
-        .hidden { display: none !important; }
-        .safe-pb { padding-bottom: env(safe-area-inset-bottom); }
-        .safe-pt { padding-top: env(safe-area-inset-top); }
-        .mood-card { transition: all 0.2s ease; border: 1px solid rgba(255,255,255,0.1); }
-        .mood-card.selected { border-color: #fff; background: rgba(255,255,255,0.1); transform: scale(1.05); }
-        .scrollbar-hide::-webkit-scrollbar { display: none; }
-    </style>
+<style>
+    .custom-bg { background-color: #000000; }
+    .question-box { 
+        background: linear-gradient(145deg, #0d1e75, #9a18a4); 
+        height: 16rem; /* Ajusta este valor según lo necesites */
+        display: flex; 
+        flex-direction: column; 
+        justify-content: center; 
+        align-items: center;
+        border-radius: 0.75rem; /* Borde redondeado */
+        overflow: hidden; /* Asegurarse de que el contenido se ajuste dentro */
+        padding: 16px; /* Ajustar el padding según sea necesario */
+    }
+    .font-caveat { font-family: 'Caveat', cursive; }
+    .font-comfortaa { font-family: 'Comfortaa', sans-serif; }
+    h1 { font-family: 'Caveat', cursive; }
+
+    /* Desactivar el margen azul al deslizar en iOS */
+    body {
+        -webkit-overflow-scrolling: touch;
+        overflow: hidden;
+    }
+
+/* Animación de fade-in y zoom-in */
+@keyframes zoomIn {
+  0% {
+    opacity: 0.2; /* Comienza con una opacidad más baja */
+    transform: scale(0.98); /* Ajuste del zoom para que no sea tan fuerte */
+  }
+  100% {
+    opacity: 1; /* Llega a opacidad completa al final */
+    transform: scale(1);
+  }
+}
+
+/* Clase para aplicar la animación con tiempo reducido */
+.animate-zoom-in {
+  animation: zoomIn 0.6s ease-in-out; /* Tiempo de animación reducido a 0.6 segundos */
+}
+    
+</style>
+
 </head>
-<body class="text-white">
-
-    <!-- Splash Screen -->
-    <div id="splash-screen" class="fixed inset-0 flex items-center justify-center bg-white z-50 transition-opacity duration-500">
-        <div class="flex flex-col items-center text-center px-6">
-             <div class="w-32 h-32 mb-6 flex items-center justify-center">
-                <img id="splash-logo" src="logoblanco.png" alt="MEET" class="max-w-full max-h-full object-contain" 
-                     onerror="this.onerror=null; this.src='logo.png'; this.parentElement.innerHTML='<div class=\'w-24 h-24 bg-black rounded-full flex items-center justify-center text-white font-bold animate-pulse text-2xl\'>MEET</div>'">
-             </div>
-             <p id="splash-text" class="text-black font-caveat text-3xl">Cargando catálogo...</p>
-        </div>
+<body class="custom-bg font-comfortaa">
+    
+    <!-- Pantalla de carga con logotipo -->
+    <div id="splash-screen" class="fixed inset-0 flex items-center justify-center bg-white z-50">
+        <img src="logo.png" alt="Logotipo" class="w-2/3 animate-zoom-in">
     </div>
 
-    <!-- Lobby -->
-    <div id="lobby-setup" class="hidden fixed inset-0 flex flex-col items-center justify-center p-6 z-40 animate-zoom-in safe-pt safe-pb overflow-y-auto">
-        <div class="mb-6 flex flex-col items-center">
-            <img src="logo.png" class="h-24 w-auto mb-2" alt="Logo Meet" onerror="this.style.display='none'">
-            <h1 class="text-6xl font-caveat text-center text-white">MEET</h1>
+    <!-- Pantalla de selección de jugadores -->
+    <div id="player-setup" class="hidden fixed inset-0 flex flex-col justify-center items-center py-10 z-40 animate-zoom-in">
+        <h1 class="text-white text-5xl mb-6 font-extrabold text-center font-caveat" >¿Quiénes vais a <br> dejaros llevar?</h1>
+        <div id="player-inputs" class="mb-4 flex flex-col items-center space-y-2">
+            <!-- Las primeras dos cajitas -->
+            <input type="text" class="player-name bg-white px-4 py-2 rounded" placeholder="Nombre 1">
+            <input type="text" class="player-name bg-white px-4 py-2 rounded" placeholder="Nombre 2">
         </div>
+        <!-- Botón para añadir más cajitas -->
+        <button id="add-player" class="bg-white-600 text-white py-2 px-4 rounded mb-4">+</button>
+        <!-- Botón de instrucciones sutil -->
+        <a href="instrucciones.html" target="_blank" class="text-white text-sm mb-2 underline">
+        Instrucciones del juego
+        </a>
+        <button id="start-game" class="bg-gradient-to-r from-[#0d1e75] to-[#9a18a4] text-white py-2 px-6 rounded">
+            Empezar
+        </button>
+    </div>
+
+    <!-- Pantalla de selección de categorías -->
+    <div id="category-setup" class="hidden fixed inset-0 flex flex-col justify-center items-center py-10 z-30 bg-black bg-opacity-90 animate-zoom-in">
+    <h1 class="text-white text-5xl mb-6 font-extrabold text-center font-caveat" >¿En qué mood <br> estáis hoy?</h1>
+        <div class="mb-6 space-y-4">
+            <!-- Opciones de categorías -->
+            <label class="flex items-center space-x-3">
+                <input type="checkbox" class="category-checkbox" value="love">
+                <span class="text-white text-lg">Romántico ❤️</span>
+            </label>
+            <label class="flex items-center space-x-3">
+                <input type="checkbox" class="category-checkbox" value="sexual">
+                <span class="text-white text-lg">Sexual 🔥</span>
+            </label>
+            <label class="flex items-center space-x-3">
+                <input type="checkbox" class="category-checkbox" value="funny">
+                <span class="text-white text-lg">Divertido 🤪</span>
+            </label>
+            <label class="flex items-center space-x-3">
+                <input type="checkbox" class="category-checkbox" value="intense">
+                <span class="text-white text-lg">Intenso 🤯</span>
+            </label>
+            <!-- Opción para seleccionar todas -->
+            <label class="flex items-center space-x-3">
+                <input type="checkbox" id="select-all" value="all">
+                <span class="text-white text-lg">¡Vamos a por todas! 🎉</span>
+            </label>
+        </div>
+        <button id="apply-categories" class="bg-gradient-to-r from-[#0d1e75] to-[#9a18a4] text-white py-2 px-6 rounded">
+            Continuar
+        </button>
+    </div>
+
+    <!-- Pantalla de juego -->
+    <div id="game-screen" class="hidden fixed inset-0 flex flex-col justify-center items-center py-10 z-30 animate-zoom-in">
+        <!-- Logo encima de la pregunta -->
+        <img src="logoblanco.png" alt="Logotipo" class="w-32 mb-4">
+        <!-- Caja de preguntas -->
+
+<!-- Caja de preguntas con tamaño fijo, contenido centrado y borde redondeado -->
+<div class="question-box p-8 rounded-xl shadow-lg max-w-lg w-full text-center">
+    <div id="emoji" class="emoji mb-4"></div>
+    <!-- Cambié el tamaño de la fuente y añadí la clase `leading-normal` para mejorar la legibilidad -->
+    <p id="question" class="text-white text-2xl mb-3 font-caveat leading-normal">
+        ¡Clica en «Déjate llevar» para comenzar la experiencia!
+    </p>
+    <button id="new-question" class="bg-purple-600 text-white py-2 px-6 rounded mb-4">
+        Déjate llevar
+    </button>
+</div>
         
-        <div class="w-full max-w-xs space-y-4">
-            <input id="user-nickname" type="text" class="w-full bg-white/10 text-white px-6 py-4 rounded-2xl border border-white/20 text-center outline-none focus:border-purple-500 transition-colors" placeholder="Tu apodo">
-            
-            <div id="mood-selector" class="grid grid-cols-4 gap-2">
-                <button onclick="selectMood('chill', this)" class="mood-card selected p-2 rounded-xl flex flex-col items-center">
-                    <span class="text-lg">❤️</span>
-                    <span class="text-[7px] mt-1 uppercase opacity-60">Chill</span>
-                </button>
-                <button onclick="selectMood('hot', this)" class="mood-card p-2 rounded-xl flex flex-col items-center">
-                    <span class="text-lg">🔥</span>
-                    <span class="text-[7px] mt-1 uppercase opacity-60">Hot</span>
-                </button>
-                <button onclick="selectMood('psycho', this)" class="mood-card p-2 rounded-xl flex flex-col items-center">
-                    <span class="text-lg">🧠</span>
-                    <span class="text-[7px] mt-1 uppercase opacity-60">Psycho</span>
-                </button>
-                <button onclick="selectMood('mix', this)" class="mood-card p-2 rounded-xl flex flex-col items-center">
-                    <span class="text-lg">🌀</span>
-                    <span class="text-[7px] mt-1 uppercase opacity-60">Mix</span>
-                </button>
-            </div>
-
-            <div class="pt-2 space-y-3">
-                <button id="btn-create-room" class="w-full bg-white text-black py-4 rounded-2xl font-bold active:scale-95 shadow-lg uppercase text-[10px] tracking-[0.2em]">Crear Sala</button>
-                <div class="flex items-center py-2 opacity-20"><div class="flex-grow border-t border-white"></div><span class="mx-4 text-[10px]">O</span><div class="flex-grow border-t border-white"></div></div>
-                <div class="flex flex-col space-y-2">
-                    <input id="room-id-input" type="text" maxlength="4" class="w-full bg-white/5 text-white px-4 py-4 rounded-2xl border border-white/10 uppercase outline-none text-center font-bold tracking-[0.4em]" placeholder="CÓDIGO">
-                    <button id="btn-join-room" class="w-full bg-indigo-600/50 py-4 rounded-2xl font-bold active:scale-95 border border-indigo-400/20 uppercase text-[10px] tracking-[0.2em]">Unirse</button>
-                </div>
-            </div>
+        <div id="player-scores" class="mt-6 text-white w-full max-w-md px-4 sm:px-6">
+            <!-- Este contenedor será actualizado dinámicamente con JavaScript -->
         </div>
     </div>
 
-    <!-- Pantalla de Juego -->
-    <div id="game-screen" class="hidden fixed inset-0 flex flex-col justify-between items-center py-6 px-4 z-30 safe-pt safe-pb bg-black">
-        <div class="w-full flex justify-between items-center px-4">
-            <button onclick="window.location.reload()" class="text-white/20 uppercase text-[10px] tracking-widest font-bold">Salir</button>
-            <div id="display-room-id" class="text-[10px] font-bold bg-white/5 px-4 py-2 rounded-full border border-white/10 text-purple-400 tracking-[0.2em]">----</div>
-        </div>
-        <div id="turn-indicator" class="text-[10px] uppercase tracking-[0.3em] font-bold text-white/40 bg-white/5 px-6 py-2 rounded-full border border-white/5">Esperando...</div>
-        <div id="q-container" class="question-box w-full max-w-sm p-8 rounded-[3rem] shadow-2xl text-center relative mx-4 border border-white/10">
-            <div id="emoji" class="text-6xl mb-6 drop-shadow-lg">✨</div>
-            <div class="flex-1 flex items-center justify-center min-h-[140px]">
-                <p id="question" class="text-2xl md:text-3xl font-caveat leading-tight px-2 text-white">¡Bienvenido!</p>
-            </div>
-            <div id="host-controls" class="mt-8 hidden flex flex-col items-center space-y-4">
-                <button id="new-question" class="bg-white text-black font-bold py-4 px-10 rounded-full shadow-2xl active:scale-90 text-[9px] tracking-[0.2em]">SIGUIENTE PREGUNTA</button>
-            </div>
-        </div>
-        <div id="player-scores" class="w-full max-w-sm space-y-3 overflow-y-auto max-h-[25vh] mt-8 px-2 scrollbar-hide"></div>
-    </div>
+    <script>
+        
+document.addEventListener("DOMContentLoaded", () => {
+    // Función para cambiar las pantallas
+    function showScreen(screenId) {
+        // Primero, ocultar todas las pantallas
+        document.querySelectorAll(".hidden").forEach(screen => {
+            screen.classList.add("hidden");
+        });
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getFirestore, doc, setDoc, getDoc, onSnapshot, updateDoc, arrayUnion } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-        import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        // Añadir la clase de animación y mostrar la pantalla
+        const screenToShow = document.getElementById(screenId);
+        screenToShow.classList.remove("hidden");
+        screenToShow.classList.add("animate-zoom-in");
+    }
 
-        const splash = document.getElementById('splash-screen');
-        const lobby = document.getElementById('lobby-setup');
+    // Ejemplo de cómo mostrar la pantalla de selección de jugadores después de 3 segundos
+    setTimeout(() => {
+        showScreen("player-setup");
+    }, 3000);  // Cambia esto a la lógica que desees para el cambio de pantalla
+});
 
-        const hideSplash = () => {
-            splash.classList.add('opacity-0');
+        
+        document.addEventListener("DOMContentLoaded", () => {
+            // Pantalla inicial de carga
             setTimeout(() => {
-                splash.classList.add('hidden');
-                lobby.classList.remove('hidden');
-            }, 500);
-        };
+                document.getElementById("splash-screen").classList.add("hidden");
+                document.getElementById("player-setup").classList.remove("hidden");
+            }, 3000);
 
-        // Forzamos entrada en 3 segundos si Firebase no responde
-        setTimeout(hideSplash, 3000);
+            // Configurar jugadores y comenzar el juego
+            const playerInputsContainer = document.getElementById("player-inputs");
+            const addPlayerButton = document.getElementById("add-player");
+            let playerCount = 2;
+            let players = [];
+            const maxScore = 100;
 
-        let config = null;
-        try {
-            // Buscamos la config en las variables globales que inyecta el entorno
-            if (typeof __firebase_config !== 'undefined') {
-                config = JSON.parse(__firebase_config);
-            }
-        } catch (e) {
-            console.error("Config error:", e);
-        }
-
-        if (config) {
-            const app = initializeApp(config);
-            const db = getFirestore(app);
-            const auth = getAuth(app);
-            const appId = typeof __app_id !== 'undefined' ? __app_id : 'meet-app-v1';
-
-            let currentRoomId = null, currentUser = null, isHost = false, selectedMood = 'chill', unsubscribeRoom = null;
-
-            const QUESTIONS = {
-                chill: [{text: "¿Cuál es tu mejor recuerdo de infancia?", emoji: "❤️"}, {text: "¿Qué viaje repetirías mil veces?", emoji: "✈️"}],
-                hot: [{text: "¿Qué es lo más atrevido que has hecho?", emoji: "🔥"}, {text: "¿Cuál es tu mayor fantasía?", emoji: "🔥"}],
-                psycho: [{text: "¿Qué harías si fueras invisible un día?", emoji: "🧠"}, {text: "¿Cuál es tu mayor miedo?", emoji: "🧠"}],
-                mix: []
-            };
-
-            window.selectMood = (mood, el) => {
-                selectedMood = mood;
-                document.querySelectorAll('.mood-card').forEach(c => c.classList.remove('selected'));
-                el.classList.add('selected');
-            };
-
-            onAuthStateChanged(auth, (user) => {
-                if (user) {
-                    currentUser = user;
-                    hideSplash();
+            addPlayerButton.addEventListener("click", () => {
+                if (playerCount < 12) {
+                    playerCount++;
+                    const newInput = document.createElement("input");
+                    newInput.type = "text";
+                    newInput.className = "player-name bg-white px-4 py-2 rounded";
+                    newInput.placeholder = `Nombre ${playerCount}`;
+                    playerInputsContainer.appendChild(newInput);
                 } else {
-                    signInAnonymously(auth).catch(hideSplash);
+                    alert("¡No puedes añadir más de 12 jugadores!");
                 }
             });
 
-            document.getElementById('btn-create-room').onclick = async () => {
-                const name = document.getElementById('user-nickname').value.trim();
-                if (!name || !currentUser) return;
-                isHost = true;
-                currentRoomId = Math.random().toString(36).substring(2, 6).toUpperCase();
-                const roomRef = doc(db, 'artifacts', appId, 'public', 'data', 'rooms', currentRoomId);
-                await setDoc(roomRef, {
-                    host: currentUser.uid,
-                    mood: selectedMood,
-                    currentQuestion: { text: "Pulsa Siguiente para empezar", emoji: "✨" },
-                    players: [{ uid: currentUser.uid, name, score: 0 }],
-                    turnIndex: 0
+            document.getElementById("start-game").addEventListener("click", () => {
+                players = [];
+                document.querySelectorAll(".player-name").forEach(input => {
+                    if (input.value.trim()) {
+                        players.push({ name: input.value.trim(), score: 0 });
+                    }
                 });
-                startRoomListener(db, appId);
-            };
-
-            document.getElementById('btn-join-room').onclick = async () => {
-                const name = document.getElementById('user-nickname').value.trim();
-                const roomId = document.getElementById('room-id-input').value.toUpperCase().trim();
-                if (!name || !roomId || !currentUser) return;
-                const roomRef = doc(db, 'artifacts', appId, 'public', 'data', 'rooms', roomId);
-                const snap = await getDoc(roomRef);
-                if (snap.exists()) {
-                    currentRoomId = roomId;
-                    isHost = snap.data().host === currentUser.uid;
-                    await updateDoc(roomRef, { players: arrayUnion({ uid: currentUser.uid, name, score: 0 }) });
-                    startRoomListener(db, appId);
+                if (players.length > 0) {
+                    document.getElementById("player-setup").classList.add("hidden");
+                    document.getElementById("category-setup").classList.remove("hidden"); // Mostrar pantalla de categorías
                 }
-            };
+            });
 
-            function startRoomListener(db, appId) {
-                document.getElementById('lobby-setup').classList.add('hidden');
-                document.getElementById('game-screen').classList.remove('hidden');
-                document.getElementById('display-room-id').innerText = currentRoomId;
-                if (isHost) document.getElementById('host-controls').classList.remove('hidden');
-
-                unsubscribeRoom = onSnapshot(doc(db, 'artifacts', appId, 'public', 'data', 'rooms', currentRoomId), (s) => {
-                    const d = s.data();
-                    if (!d) return;
-                    const turnPlayer = d.players[d.turnIndex % d.players.length];
-                    document.getElementById('turn-indicator').innerText = turnPlayer.uid === currentUser.uid ? "TU TURNO" : `TURNO: ${turnPlayer.name}`;
-                    document.getElementById('question').innerText = d.currentQuestion.text;
-                    document.getElementById('emoji').innerText = d.currentQuestion.emoji;
-                    updateScores(d.players, db, appId);
+            // Seleccionar todas las categorías con "¡Vamos a por todas!"
+            document.getElementById("select-all").addEventListener("change", (e) => {
+                const isChecked = e.target.checked;
+                document.querySelectorAll(".category-checkbox").forEach((checkbox) => {
+                    if (checkbox !== e.target) {
+                        checkbox.checked = isChecked;
+                    }
                 });
-            }
+            });
 
-            function updateScores(players, db, appId) {
-                document.getElementById('player-scores').innerHTML = players.map(p => `
-                    <div class="bg-white/5 p-4 rounded-2xl border ${p.uid === currentUser.uid ? 'border-purple-500' : 'border-white/5'}">
-                        <div class="flex justify-between items-center mb-2">
-                            <span class="text-[10px] font-bold uppercase tracking-widest">${p.name}</span>
-                            <div class="flex items-center space-x-3">
-                                ${p.uid === currentUser.uid ? `<button data-val="-5" class="score-adj text-lg opacity-40">－</button>
-                                <span class="text-lg font-bold">${p.score}</span>
-                                <button data-val="5" class="score-adj text-lg text-purple-400">＋</button>` : `<span class="text-lg">${p.score}</span>`}
-                            </div>
-                        </div>
-                        <div class="w-full bg-white/5 h-1 rounded-full"><div class="bg-purple-500 h-full transition-all" style="width:${p.score}%"></div></div>
-                    </div>
-                `).join('');
-                document.querySelectorAll('.score-adj').forEach(b => {
-                    b.onclick = () => changeScore(parseInt(b.dataset.val), db, appId);
-                });
-            }
+            // Aplicar filtros y comenzar el juego
+            document.getElementById("apply-categories").addEventListener("click", () => {
+                const selectedCategories = Array.from(
+                    document.querySelectorAll(".category-checkbox:checked")
+                ).map((checkbox) => checkbox.value);
 
-            async function changeScore(v, db, appId) {
-                const r = doc(db, 'artifacts', appId, 'public', 'data', 'rooms', currentRoomId);
-                const snap = await getDoc(r);
-                const players = snap.data().players.map(p => {
-                    if(p.uid === currentUser.uid) p.score = Math.max(0, Math.min(100, p.score + v));
-                    return p;
-                });
-                await updateDoc(r, { players });
-            }
+                if (selectedCategories.length === 0) {
+                    alert("¡Por favor selecciona al menos una categoría!");
+                    return;
+                }
 
-            document.getElementById('new-question').onclick = async () => {
-                const r = doc(db, 'artifacts', appId, 'public', 'data', 'rooms', currentRoomId);
-                const snap = await getDoc(r);
-                const pool = QUESTIONS[snap.data().mood] || QUESTIONS.chill;
-                const q = pool[Math.floor(Math.random() * pool.length)];
-                await updateDoc(r, { currentQuestion: q, turnIndex: snap.data().turnIndex + 1 });
-            };
-        } else {
-            // Si no hay config, forzamos el paso al lobby para que al menos veas el diseño
-            setTimeout(hideSplash, 1000);
-        }
-    </script>
-</body>
-</html>
+                // Filtrar preguntas según las categorías seleccionadas
+                const filteredQuestions = questions.filter((q) =>
+                    selectedCategories.includes(q.category)
+                );
+
+                if (filteredQuestions.length === 0) {
+                    alert("¡No hay preguntas en las categorías seleccionadas!");
+                    return;
+                }
+
+                // Guardar preguntas filtradas para el juego
+                window.filteredQuestions = filteredQuestions;
+
+                // Ocultar la pantalla de categorías y mostrar la pantalla del juego
+                document.getElementById("category-setup").classList.add("hidden");
+                document.getElementById("game-screen").classList.remove("hidden");
+
+                usedQuestions.clear();
+                updateScores();
+            });
+
+            // Mostrar nueva pregunta filtrada
+            document.getElementById("new-question").addEventListener("click", () => {
+                let availableQuestions = window.filteredQuestions.filter(q => !usedQuestions.has(q.text));
+                if (availableQuestions.length === 0) {
+                    usedQuestions.clear();
+                    availableQuestions = window.filteredQuestions;
+                }
+                const randomQuestion = availableQuestions[Math.floor(Math.random() * availableQuestions.length)];
+                usedQuestions.add(randomQuestion.text);
+                document.getElementById("question").textContent = randomQuestion.text;
+                document.getElementById("emoji").textContent = randomQuestion.emoji;
+            });
+
+    const questions = [
+        { text: "¿Qué significa el amor para ti?", "emoji": "❤️", "category": "love" },
+        { text: "¿En qué crees que se basa el amor a primera vista?", "emoji": "❤️", "category": "love" },
+        { text: "¿Qué fue lo que más te molestó de tu primer amor?", "emoji": "❤️", "category": "love" },
+        { text: "Si fueras invisible por un día, ¿qué harías?", "emoji": "🔥", "category": "sexual" },
+        { text: "¿Cómo te consideras en la cama?", "emoji": "🔥", "category": "sexual" },
+        { text: "¿Qué parte de tu cuerpo consideras más atractiva?", "emoji": "🔥", "category": "sexual" },
+        { text: "Si fueras rico/a, ¿qué harías con tu fortuna?", "emoji": "🤪", "category": "funny" },
+        { text: "Si pudieras tener cualquier superpoder, ¿cuál escogerías?", "emoji": "🤪", "category": "funny" },
+        { text: "Si pudieras teletransportarte, ¿a dónde irías?", "emoji": "🤪", "category": "funny" },
+        { text: "¿Cuál es tu mayor miedo y por qué?", "emoji": "🤯", "category": "intense" },
+        { text: "¿Cómo te gustaría morir?", "emoji": "🤯", "category": "intense" },
+        { text: "¿Cuál consideras que es el sentido de la vida?", "emoji": "🤯", "category": "intense" },
+        { text: "¿Qué es lo más fuerte que has hecho por amor?", "emoji": "❤️", "category": "love" },
+        { text: "¿Qué significa para ti ser una persona romántica?", "emoji": "❤️", "category": "love" },
+        { text: "¿Cómo sería tu cita perfecta?", "emoji": "❤️", "category": "love" },
+        { text: "¿Qué piensas sobre el concepto de amor eterno?", "emoji": "❤️", "category": "love" },
+        { text: "¿Te gustaría tener una relación a larga distancia? ¿Por qué?", "emoji": "❤️", "category": "love" },
+        { text: "¿Cuál es tu mayor temor en una relación?", "emoji": "❤️", "category": "love" },
+        { text: "¿Qué valoras más en una pareja?", "emoji": "❤️", "category": "love" },
+        { text: "¿Cuál es tu fantasía sexual más secreta?", "emoji": "🔥", "category": "sexual" },
+        { text: "¿Cómo describirías la química perfecta entre dos personas?", "emoji": "🔥", "category": "sexual" },
+        { text: "¿Qué opinas sobre el sexo sin compromiso?", "emoji": "🔥", "category": "sexual" },
+        { text: "¿Cuál es tu juguete sexual favorito?", "emoji": "🔥", "category": "sexual" },
+        { text: "¿Te gustaría probar cosas nuevas en la intimidad? ¿Qué tipo?", "emoji": "🔥", "category": "sexual" },
+        { text: "¿Te consideras un buen amante? ¿Por qué?", emoji: "🔥", category: "sexual" },
+        { text: "¿Qué harías si te tocaran un tema sexual incómodo?", emoji: "🔥", category: "sexual" },
+        { text: "Si fueras un superhéroe, ¿cuál sería tu poder?", emoji: "🤪", category: "funny" },
+        { text: "¿Cuál es el peor chiste que conoces?", emoji: "🤪", category: "funny" },
+        { text: "Si pudieras ser cualquier animal por un día, ¿cuál serías?", emoji: "🤪", category: "funny" },
+        { text: "¿Qué harías si pudieras hablar con los animales?", emoji: "🤪", category: "funny" },
+        { text: "¿Qué harías si fueras un niño otra vez por un día?", emoji: "🤪", category: "funny" },
+        { text: "¿Te has reído alguna vez en una situación inapropiada?", emoji: "🤪", category: "funny" },
+        { text: "Si pudieras ser famoso por algo ridículo, ¿qué harías?", emoji: "🤪", category: "funny" },
+        { text: "¿Cuál es tu imitación de voz más graciosa?", emoji: "🤪", category: "funny" },
+        { text: "Si fueras un personaje de dibujos animados, ¿quién serías?", emoji: "🤪", category: "funny" },
+        { text: "¿Qué opinas sobre el destino? ¿Crees que todo pasa por una razón?", emoji: "🤯", category: "intense" },
+        { text: "¿Qué harías si supieras que te queda solo un día de vida?", emoji: "🤯", category: "intense" },
+        { text: "¿Te gustaría saber cuándo vas a morir?", emoji: "🤯", category: "intense" },
+        { text: "¿Qué opinas sobre el concepto de libertad?", emoji: "🤯", category: "intense" },
+        { text: "¿Cuál es el mayor sacrificio que has hecho en tu vida?", emoji: "🤯", category: "intense" },
+        { text: "¿Crees que hay vida después de la muerte?", emoji: "🤯", category: "intense" },
+        { text: "¿Qué harías si tuvieras el poder de cambiar el mundo?", emoji: "🤯", category: "intense" },
+        { text: "¿Qué significa para ti la libertad?", emoji: "🤯", category: "intense" },
+        { text: "¿Qué es lo que más te gusta hacer con tu pareja?", emoji: "❤️", category: "love" },
+        { text: "¿Cuál es tu recuerdo más bonito de un amor?", emoji: "❤️", category: "love" },
+        { text: "¿Tienes alguna cita famosa sobre el amor que te guste?", emoji: "❤️", category: "love" },
+        { text: "¿Cómo te gustaría que fuera tu boda ideal?", emoji: "❤️", category: "love" },
+        { text: "¿Cuál es el detalle más bonito que has recibido de un ser querido?", emoji: "❤️", category: "love" },
+        { text: "¿Crees que el amor puede sanar heridas emocionales?", emoji: "❤️", category: "love" },
+        { text: "¿Qué tipo de abrazos te gustan más?", emoji: "❤️", category: "love" },
+        { text: "¿Qué harías si alguien te declarara su amor de una forma muy original?", emoji: "❤️", category: "love" },
+        { text: "¿Qué significa para ti el amor verdadero?", emoji: "❤️", category: "love" },
+        { text: "¿Qué opinas sobre las sorpresas románticas?", emoji: "❤️", category: "love" },
+        { text: "¿Cuál es tu canción romántica favorita y por qué?", emoji: "❤️", category: "love" },
+        { text: "¿Prefieres las muestras de cariño en público o en privado? ¿Por qué?", emoji: "❤️", category: "love" },
+        { text: "¿Cómo fue la vez que te enamoraste de alguien que no esperabas?", emoji: "❤️", category: "love" },
+        { text: "¿Qué significa para ti una relación saludable?", emoji: "❤️", category: "love" },
+        { text: "¿Cuál ha sido el gesto más romántico que has hecho por alguien?", emoji: "❤️", category: "love" },
+        { text: "¿Qué tipo de regalos sentimentales te gustan más?", emoji: "❤️", category: "love" },
+        { text: "¿Cuál es la cualidad más atractiva que buscas en una pareja?", emoji: "❤️", category: "love" },
+        { text: "¿Qué harías si te enamoras de alguien con quien no puedes estar?", emoji: "❤️", category: "love" },
+        { text: "¿Qué importancia le das a la lealtad en una relación?", emoji: "❤️", category: "love" },
+        { text: "¿Cómo te gustaría explorar diferentes tipos de sexo?", emoji: "🔥", category: "sexual" },
+        { text: "¿Cómo te sentirías si tu pareja te pidiera algo fuera de lo común en la intimidad?", emoji: "🔥", category: "sexual" },
+        { text: "¿Hay alguna práctica que jamás harías en la cama?", emoji: "🔥", category: "sexual" },
+        { text: "¿Cómo te sentirías si tuvieses que experimentar sexo en lugares públicos?", emoji: "🔥", category: "sexual" },
+        { text: "¿Prefieres que la intimidad sea lenta o rápida? ¿Por qué?", emoji: "🔥", category: "sexual" },
+        { text: "¿Has tenido alguna vez un sueño erótico? ¿Cómo fue?", emoji: "🔥", category: "sexual" },
+        { text: "¿Qué es lo que más te excita en la intimidad?", emoji: "🔥", category: "sexual" },
+        { text: "¿Qué opinas sobre las películas para adultos?", emoji: "🔥", category: "sexual" },
+        { text: "¿Te consideras una persona atrevida en la intimidad? ¿Por qué?", emoji: "🔥", category: "sexual" },
+        { text: "¿Cuál es tu fantasía sexual más atrevida?", emoji: "🔥", category: "sexual" },
+        { text: "¿Qué piensas de la sexualidad abierta?", emoji: "🔥", category: "sexual" },
+        { text: "¿Cómo te gustaría que fuera una noche de pasión perfecta?", emoji: "🔥", category: "sexual" },
+        { text: "¿Prefieres el sexo suave o más intenso? ¿Qué te atrae de cada uno?", emoji: "🔥", category: "sexual" },
+        { text: "¿Qué importancia le das a la atracción por personas del mismo sexo?", emoji: "🔥", category: "sexual" },
+        { text: "¿Tienes alguna preferencia por algún tipo de ropa en la intimidad?", emoji: "🔥", category: "sexual" },
+        { text: "¿Qué harías si un desconocido te hiciera una propuesta sexual?", emoji: "🔥", category: "sexual" },
+        { text: "¿Cómo describirías una relación sexual ideal para ti?", emoji: "🔥", category: "sexual" },
+        { text: "¿Prefieres tener sexo con emoción o relajado? ¿Por qué?", emoji: "🔥", category: "sexual" },
+        { text: "Si fueras una celebridad por un día, ¿qué harías?", emoji: "🤪", category: "funny" },
+        { text: "¿Cuál es la comida más rara que te gusta comer?", emoji: "🤪", category: "funny" },
+        { text: "Si pudieras vivir en una película, ¿cuál escogerías y por qué?", emoji: "🤪", category: "funny" },
+        { text: "¿Qué superpoder elegirías para hacerle bromas a la gente?", emoji: "🤪", category: "funny" },
+        { text: "¿Te atreverías a cantar en público en un karaoke? ¿Por qué?", emoji: "🤪", category: "funny" },
+        { text: "Si fueras un personaje de Disney, ¿quién serías y por qué?", emoji: "🤪", category: "funny" },
+        { text: "¿Te has caído alguna vez de una forma muy graciosa? ¿Cómo fue?", emoji: "🤪", category: "funny" },
+        { text: "¿Cuál es el peor apodo que te han puesto y cómo lo tomaste?", emoji: "🤪", category: "funny" },
+        { text: "Si pudieras vivir en cualquier época, ¿cuál escogerías y por qué?", emoji: "🤪", category: "funny" },
+        { text: "Si fueras un detective, ¿qué tipo de crimen resolverías?", emoji: "🤪", category: "funny" },
+        { text: "¿Te gustaría tener una mascota exótica? ¿Cuál?", emoji: "🤪", category: "funny" },
+        { text: "¿Tienes alguna manía rara? ¿Cuál?", emoji: "🤪", category: "funny" },
+        { text: "Si fueras un inventor, ¿qué inventarías?", emoji: "🤪", category: "funny" },
+        { text: "Si fueras invisible por un día, ¿a qué persona espiarías y por qué?", emoji: "🤪", category: "funny" },
+        { text: "¿Qué harías si te encuentras con tu ‘yo’ del futuro?", emoji: "🤪", category: "funny" },
+        { text: "Si pudieras tener cualquier habilidad inútil, ¿cuál elegirías?", emoji: "🤪", category: "funny" },
+        { text: "¿Te atreverías a comer algo extremadamente picante?", emoji: "🤪", category: "funny" },
+        { text: "Si pudieras tener un animal como compañero de trabajo, ¿cuál escogerías?", emoji: "🤪", category: "funny" },
+        { text: "¿Te gustaría tener un doble para que haga las tareas aburridas?", emoji: "🤪", category: "funny" },
+        { text: "Si pudieras cambiar de lugar con alguien por un día, ¿quién serías y por qué?", emoji: "🤪", category: "funny" },
+        { text: "¿Qué significa para ti la felicidad?", emoji: "🤯", category: "intense" },
+        { text: "¿Qué harías si pudieras cambiar un evento histórico?", emoji: "🤯", category: "intense" },
+        { text: "¿Te gustaría saber todos los secretos del universo?", emoji: "🤯", category: "intense" },
+        { text: "¿Qué es lo más valioso para ti en la vida?", emoji: "🤯", category: "intense" },
+        { text: "¿Qué piensas sobre el sufrimiento humano?", emoji: "🤯", category: "intense" },
+        { text: "¿Qué opinas sobre la religión?", emoji: "🤯", category: "intense" },
+        { text: "¿Crees que el tiempo es relativo?", emoji: "🤯", category: "intense" },
+        { text: "¿Cuál es tu concepto de libertad?", emoji: "🤯", category: "intense" },
+        { text: "¿Qué cambiarías en la sociedad para mejorarla?", emoji: "🤯", category: "intense" },
+        { text: "¿Qué opinas sobre el destino y la suerte?", emoji: "🤯", category: "intense" },
+
+
+{ text: "Si murieras mañana, ¿qué harías hoy?", "emoji": "🤯", "category": "intense" },
+{ text: "¿Qué es lo más ridículo que has hecho estando borraxe?", "emoji": "🤪", "category": "funny" },
+{ text: "Di algo que haga una persona que te genere confianza.", "emoji": "❤️", "category": "love" },
+{ text: "Di una cosa que cogerías y otra que descartarías de les integrantes de la mesa.", "emoji": "🤯", "category": "intense" },
+{ text: "¿Qué es lo que nunca te gustaría probar en la cama?", "emoji": "🔥", "category": "sexual" },
+{ text: "¿Qué objeto salvarías de un incendio?", "emoji": "🤯", "category": "intense" },
+{ text: "¿Qué es lo que la mayoría de la gente suele pensar de ti?", "emoji": "🤯", "category": "intense" },
+{ text: "Si solo pudieras vivir en una estación del año, ¿cuál sería?", "emoji": "❤️", "category": "love" },
+{ text: "¿Cuándo fue la última vez que lloraste delante de alguien? ¿Por qué?", "emoji": "🤯", "category": "intense" },
+{ text: "¿Qué es lo que mejor se te da en la cama?", "emoji": "🔥", "category": "sexual" },
+{ text: "¿Cuál es la parte que consideras más sexy de tu cuerpo?", "emoji": "🔥", "category": "sexual" },
+{ text: "Si pudieras revivir un momento de tu vida, ¿cuál sería?", "emoji": "❤️", "category": "love" },
+{ text: "¿Qué papel juegan los viajes en tu vida y cuál ha sido tu experiencia más impactante?", "emoji": "🤯", "category": "intense" },
+{ text: "¿Qué crees que es lo que más te ha marcado en tu infancia?", "emoji": "🤯", "category": "intense" },
+{ text: "Si mañana pudieras levantarte disfrutando de una habilidad sexual nueva, ¿cuál sería?", "emoji": "🔥", "category": "sexual" },
+{ text: "¿Cuál es tu mayor complejo físico y qué es lo que más te gusta de ti?", "emoji": "❤️", "category": "love" },
+{ text: "Si no pudieras hacer lo que estás haciendo ahora, ¿cómo te gustaría ganarte la vida?", "emoji": "🤯", "category": "intense" },
+{ text: "¿Cuál es el mejor recuerdo de tu infancia?", "emoji": "❤️", "category": "love" },
+{ text: "Di una cosa que creas tener en común sexualmente con les personas de la mesa.", "emoji": "🔥", "category": "sexual" },
+{ text: "Si tuvieras que elegir ahora mismo un/a famoso/a para tener relaciones sexuales, ¿quién sería?", "emoji": "🔥", "category": "sexual" },
+{ text: "¿Quién te inspira más?", "emoji": "❤️", "category": "love" },
+{ text: "¿Te gustaría ser famoso/a? ¿De qué forma?", "emoji": "🤯", "category": "intense" },
+{ text: "¿Qué es lo que valoras más de un amigo/a?", "emoji": "❤️", "category": "love" },
+{ text: "Di una frase para tu lápida.", "emoji": "🤪", "category": "funny" },
+{ text: "¿Cómo te gustaría ser recordado/a?", "emoji": "❤️", "category": "love" },
+{ text: "¿Qué querrías que se hiciera con tu cuerpo al morir?", "emoji": "🤯", "category": "intense" },
+{ text: "¿Cómo te sientes respecto a tu relación con tu madre?", "emoji": "❤️", "category": "love" },
+{ text: "¿A qué personaje histórico te gustaría conocer?", "emoji": "🤯", "category": "intense" },
+{ text: "¿Con qué tipo de personas jamás te llevarías bien?", "emoji": "🤯", "category": "intense" },
+{ text: "¿Cuál consideras que sería la peor muerte de todas?", "emoji": "🤯", "category": "intense" },
+{ text: "¿Qué cambiarías de tu presente?", "emoji": "🤯", "category": "intense" },
+{ text: "¿Qué dos adjetivos te definen mejor?", "emoji": "❤️", "category": "love" },
+{ text: "¿Qué es lo que más echas de menos de tu infancia?", "emoji": "❤️", "category": "love" },
+{ text: "¿Eres como quieres ser?", "emoji": "🤯", "category": "intense" },
+{ text: "¿En qué situación estarías dispuesto/a a mentir?", "emoji": "🤯", "category": "intense" },
+{ text: "¿Buscarías ayuda para corregir un problema sexual?", "emoji": "🔥", "category": "sexual" },
+{ text: "¿Qué valoras más, la amistad o la pareja?", "emoji": "❤️", "category": "love" },
+{ text: "¿Te consideras buena persona?", "emoji": "❤️", "category": "love" },
+{ text: "Escoge un tatuaje tuyo o de alguien de la mesa y explica su significado.", "emoji": "🤯", "category": "intense" },
+{ text: "¿Por qué aspecto de tu vida sexual sientes más gratitud?", "emoji": "🔥", "category": "sexual" },
+{ text: "¿Cuándo fue la última vez que te masturbaste?", "emoji": "🔥", "category": "sexual" },
+{ text: "¿Qué sueles pensar cuando alguien se te queda mirando?", "emoji": "🤪", "category": "funny" },
+{ text: "¿Qué tipos de vídeos hot ves más?", "emoji": "🔥", "category": "sexual" },
+{ text: "¿Qué es lo primero que haces al despertar?", "emoji": "🤯", "category": "intense" },
+{ text: "Completa esta frase: Ojalá tuviera a alguien con quien compartir...", "emoji": "❤️", "category": "love" },
+{ text: "¿Has grabado alguna vez un video íntimo?", "emoji": "🔥", "category": "sexual" },
+{ text: "¿Harías cibersexo?", "emoji": "🔥", "category": "sexual" },
+{ text: "¿Qué es lo que más te gusta que te hagan en la cama?", "emoji": "🔥", "category": "sexual" },
+{ text: "¿Qué te parecería importante destacar en tu carta de presentación?", "emoji": "🤯", "category": "intense" },
+{ text: "¿Quién crees que tiene una idea errónea de cómo eres? ¿Cuál es?", "emoji": "🤯", "category": "intense" },
+{ text: "¿Hay algo que te parezca demasiado serio como para no hacer bromas al respecto?", "emoji": "🤯", "category": "intense" },
+{ text: "¿Cuál es la parte más sensible de tu cuerpo?", "emoji": "🔥", "category": "sexual" },
+{ text: "Cuando algo no te apetece, ¿sabes poner límites?", "emoji": "❤️", "category": "love" },
+{ text: "¿Te consideras dominante/a en la cama?", "emoji": "🔥", "category": "sexual" },
+{ text: "¿Has tenido relaciones sexuales con personas desconocidas?", "emoji": "🔥", "category": "sexual" },
+{ text: "¿Qué es lo más alocado que has hecho?", "emoji": "🤪", "category": "funny" },
+{ text: "¿A qué le tienes un miedo irracional?", "emoji": "🤯", "category": "intense" },
+{ text: "¿Cómo te sentirías si pillaras a tu pareja dándose autoplacer?", "emoji": "🔥", "category": "sexual" }
+            ];
+            const usedQuestions = new Set();
+            
+function updateScores() {
+    const scoresContainer = document.getElementById("player-scores");
+    scoresContainer.innerHTML = "";
+    players.forEach((player, index) => {
+        const playerDiv = document.createElement("div");
+        playerDiv.className = "mb-4";
+
+        const playerInfo = document.createElement("div");
+        playerInfo.className = "flex items-center justify-between mb-2";
+
+        const playerName = document.createElement("p");
+        playerName.textContent = `${player.name.toUpperCase()}: ${player.score}`;
+        playerName.className = "text-lg text-white uppercase";
+
+        const buttonContainer = document.createElement("div");
+        buttonContainer.className = "flex space-x-2";
+
+        const addButton = document.createElement("button");
+        addButton.innerHTML = "➕";
+        addButton.className = "text-white text-xl px-2 py-1 rounded hover:text-green-400";
+        addButton.onclick = () => addScore(index);
+
+        const subtractButton = document.createElement("button");
+        subtractButton.innerHTML = "➖";
+        subtractButton.className = "text-white text-xl px-2 py-1 rounded hover:text-red-400";
+        subtractButton.onclick = () => subtractScore(index);
+
+        buttonContainer.appendChild(subtractButton);
+        buttonContainer.appendChild(addButton);
+
+        const progressBarContainer = document.createElement("div");
+        progressBarContainer.className = "bg-gray-200 h-4 rounded-full overflow-hidden";
+
+        const progressBar = document.createElement("div");
+        progressBar.className = "bg-green-500 h-full";
+        progressBar.style.width = `${(player.score / maxScore) * 100}%`;
+
+        progressBarContainer.appendChild(progressBar);
+        playerInfo.appendChild(playerName);
+        playerInfo.appendChild(buttonContainer);
+        playerDiv.appendChild(playerInfo);
+        playerDiv.appendChild(progressBarContainer);
+
+        scoresContainer.appendChild(playerDiv);
+    });
+}
+
+function addScore(index) {
+    players[index].score += 10;
+    if (players[index].score >= maxScore) {
+        alert(`${players[index].name} ha obtenido la mayor puntuación, pero todas habéis ganado 💜`);
+        setTimeout(() => location.reload(), 3000);
+    }
+    updateScores();
+}
+
+function subtractScore(index) {
+    if (players[index].score > 0) {
+        players[index].score -= 10;
+        updateScores();
+    } else {
+        alert("¡Ojo! La puntuación no puede ser menor a 0");
+    }
+}
+});
+</script>
+<!-- Script para evitar el zoom al hacer doble clic -->
+<script>
+    document.addEventListener('dblclick', (event) => {
+        event.preventDefault();
+    }, { passive: false });
+</script>
+<footer class="fixed bottom-10 w-full text-center">
+    <p class="text-gray-400 text-sm italic">
+        &copy; 2026 Propiedad de Kevin Roldán y Judith Sancerni
+    </p>
+</footer>
