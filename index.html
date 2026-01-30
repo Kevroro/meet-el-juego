@@ -3,240 +3,262 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Meet</title>
-    
-    <!-- PWA & Icons -->
-    <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-title" content="Mi Juego">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <link rel="apple-touch-icon" href="favicon2.png">
-    <link rel="icon" href="favicon.png" type="image/png">
-
-    <!-- Styles & Fonts -->
+    <title>Meet - Liquid Glass</title>
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Comfortaa:wght@300;400;600&display=swap" rel="stylesheet">
 
     <style>
-        /* Base Setup */
+        :root {
+            --liquid-color: #4f46e5;
+        }
+
+        * {
+            touch-action: manipulation;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
         body {
-            background-color: #000000;
+            background-color: #000;
             font-family: 'Comfortaa', sans-serif;
-            -webkit-overflow-scrolling: touch;
-            overscroll-behavior: none;
-            transition: background-color 0.5s ease;
+            overflow: hidden;
+            position: relative;
+            color: white;
+            transition: background 0.8s ease;
+            height: 100dvh;
+            width: 100vw;
         }
 
-        /* Typography */
-        .font-caveat { font-family: 'Caveat', cursive; }
-        .font-comfortaa { font-family: 'Comfortaa', sans-serif; }
+        /* Fondo líquido dinámico */
+        .liquid-bg {
+            position: fixed;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at center, var(--liquid-color) 0%, transparent 50%);
+            opacity: 0.2;
+            filter: blur(80px);
+            z-index: -1;
+            transition: background 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+            animation: rotateBg 20s linear infinite;
+        }
 
-        /* Custom UI Elements */
-        .question-box { 
-            background: linear-gradient(145deg, #0d1e75, #9a18a4); 
-            min-height: 20rem;
-            display: flex; 
-            flex-direction: column; 
-            justify-content: center; 
-            align-items: center;
-            border-radius: 1.5rem;
-            box-shadow: 0 10px 25px rgba(0,0,0, 0.5);
+        @keyframes rotateBg {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            transition: background 0.5s ease, transform 0.2s;
+            border-radius: 2.5rem;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
         }
 
-        /* Category Themes */
-        .theme-love { background: linear-gradient(145deg, #8B0000, #FF1493); }
-        .theme-sexual { background: linear-gradient(145deg, #4B0082, #FF4500); }
-        .theme-funny { background: linear-gradient(145deg, #FF8C00, #FFD700); }
-        .theme-intense { background: linear-gradient(145deg, #000080, #483D8B); }
+        .font-caveat { font-family: 'Caveat', cursive; }
 
-        .btn-gradient {
-            background: linear-gradient(to right, #0d1e75, #9a18a4);
-            transition: opacity 0.2s, transform 0.1s;
-        }
-        .btn-gradient:active { transform: scale(0.98); }
+        .theme-love { --liquid-color: #ff2d55; }
+        .theme-sexual { --liquid-color: #ff5e00; }
+        .theme-funny { --liquid-color: #ffcc00; }
+        .theme-intense { --liquid-color: #8e2de2; }
 
-        /* Animations */
-        @keyframes zoomIn {
-            0% { opacity: 0; transform: scale(0.95); }
-            100% { opacity: 1; transform: scale(1); }
+        .btn-liquid {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        .animate-zoom-in { animation: zoomIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        .btn-liquid:active { transform: scale(0.95); background: rgba(255, 255, 255, 0.15); }
+        
+        .btn-primary {
+            background: #fff;
+            color: #000;
+            font-weight: 700;
+            box-shadow: 0 10px 20px rgba(255,255,255,0.1);
+        }
 
-        @keyframes float {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
-            100% { transform: translateY(0px); }
+        input[type="text"] {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+            border-radius: 1rem;
+            font-size: 16px !important;
         }
-        .floating { animation: float 4s ease-in-out infinite; }
 
-        @keyframes floatUp {
-            0% { opacity: 1; transform: translateY(0) scale(1); }
-            100% { opacity: 0; transform: translateY(-30px) scale(1.2); }
+        .category-checkbox {
+            appearance: none;
+            width: 1.4rem;
+            height: 1.4rem;
+            border: 2px solid rgba(255,255,255,0.2);
+            border-radius: 0.5rem;
+            cursor: pointer;
+            position: relative;
+            transition: 0.2s;
         }
+        .category-checkbox:checked { background: white; border-color: white; }
+        .category-checkbox:checked::after {
+            content: '✓'; color: black; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); font-weight: bold; font-size: 0.8rem;
+        }
+
         .floating-points {
             position: absolute;
             color: #4ade80;
             font-weight: bold;
-            font-size: 1.2rem;
+            font-size: 1.4rem;
             pointer-events: none;
             animation: floatUp 0.8s ease-out forwards;
-            z-index: 50;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+            z-index: 100;
+            text-shadow: 0 0 10px rgba(0,0,0,0.5);
         }
 
-        /* Scrollbar Hide */
+        @keyframes floatUp {
+            0% { opacity: 1; transform: translateY(0) scale(1); }
+            100% { opacity: 0; transform: translateY(-40px) scale(1.3); }
+        }
+
         .no-scrollbar::-webkit-scrollbar { display: none; }
-        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-
-        input[type="text"] { font-size: 16px !important; }
-
-        .category-checkbox {
-            accent-color: #9a18a4;
-            width: 1.25rem;
-            height: 1.25rem;
+        
+        /* Animación Victoria */
+        @keyframes celebrate {
+            0% { transform: scale(0.8); opacity: 0; }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); opacity: 1; }
         }
-
-        .glass-overlay {
-            background: rgba(0, 0, 0, 0.85);
-            backdrop-filter: blur(8px);
-        }
-
-        .mask-image-gradient {
-            mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
-        }
+        .win-animate { animation: celebrate 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
     </style>
 </head>
-<body class="custom-bg text-white h-screen w-screen overflow-hidden relative pb-12">
+<body class="flex flex-col items-center overflow-hidden">
+
+    <div id="liquid-overlay" class="liquid-bg"></div>
 
     <!-- PANTALLA 1: SPLASH SCREEN -->
-    <div id="splash-screen" class="fixed inset-0 flex items-center justify-center bg-white z-50 transition-opacity duration-700">
-        <img src="logo.png" alt="Logotipo" class="w-2/3 max-w-xs animate-zoom-in floating">
+    <div id="splash-screen" class="fixed inset-0 flex items-center justify-center bg-black z-[100] transition-opacity duration-1000">
+        <img src="logo.png" alt="Logotipo" class="w-2/3 max-w-xs animate-pulse">
     </div>
 
     <!-- PANTALLA 2: SELECCIÓN DE JUGADORES -->
-    <div id="player-setup" class="hidden fixed inset-0 flex flex-col items-center pt-12 pb-16 px-4 z-40 h-full">
-        <h1 class="text-5xl mb-6 font-extrabold text-center font-caveat leading-tight drop-shadow-md">
-            ¿Quiénes vais a <br> dejaros llevar?
-        </h1>
+    <div id="player-setup" class="hidden fixed inset-0 flex flex-col items-center pt-16 px-6 z-40">
+        <h1 class="text-5xl mb-8 font-caveat text-center leading-tight">¿Quiénes vais a<br>dejaros llevar?</h1>
         
-        <div class="flex-1 w-full max-w-sm overflow-y-auto no-scrollbar mb-4 mask-image-gradient">
-            <div id="player-inputs" class="flex flex-col items-center space-y-3 pb-4">
-                <input type="text" class="player-name w-full bg-white/90 text-black px-4 py-3 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500" placeholder="Nombre 1">
-                <input type="text" class="player-name w-full bg-white/90 text-black px-4 py-3 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500" placeholder="Nombre 2">
+        <div class="flex-1 w-full max-w-sm overflow-y-auto no-scrollbar mb-4" style="mask-image: linear-gradient(to bottom, black 80%, transparent 100%);">
+            <div id="player-inputs" class="flex flex-col space-y-3 pb-10">
+                <input type="text" class="player-name w-full px-5 py-4 outline-none" placeholder="Nombre 1">
+                <input type="text" class="player-name w-full px-5 py-4 outline-none" placeholder="Nombre 2">
             </div>
             
-            <div class="flex justify-center mt-2">
-                <button id="add-player" class="bg-white/10 hover:bg-white/20 border border-white/30 text-white font-bold py-2 px-6 rounded-full transition-colors text-xl">
-                    +
-                </button>
+            <div class="flex justify-center -mt-6">
+                <button id="add-player" class="btn-liquid w-12 h-12 rounded-full flex items-center justify-center text-2xl">+</button>
             </div>
         </div>
 
-        <div class="w-full max-w-sm flex flex-col items-center gap-3 mt-auto mb-6">
-            <a href="instrucciones.html" target="_blank" class="text-gray-300 text-sm underline opacity-80 hover:opacity-100">
-                Instrucciones del juego
-            </a>
-            <button id="start-game" class="w-full btn-gradient text-white font-bold py-4 rounded-xl shadow-lg text-lg uppercase tracking-wider">
-                Empezar
-            </button>
+        <div class="w-full max-w-sm flex flex-col items-center gap-4 mb-10">
+            <a href="instrucciones.html" target="_blank" class="text-white/40 text-[10px] underline uppercase tracking-widest">Instrucciones</a>
+            <button id="start-game" class="w-full btn-primary py-4 rounded-2xl uppercase tracking-[0.2em] text-sm">Empezar</button>
         </div>
     </div>
 
     <!-- PANTALLA 3: CATEGORÍAS -->
-    <div id="category-setup" class="hidden fixed inset-0 flex flex-col justify-center items-center p-6 z-30 bg-black/95 backdrop-blur-sm pb-16">
-        <h1 class="text-5xl mb-8 font-extrabold text-center font-caveat leading-tight">
-            ¿En qué mood <br> estáis hoy?
-        </h1>
+    <div id="category-setup" class="hidden fixed inset-0 flex flex-col justify-center items-center p-8 z-30 bg-black/60 backdrop-blur-md">
+        <h1 class="text-5xl mb-10 font-caveat text-center">¿En qué mood<br>estáis hoy?</h1>
         
-        <div class="w-full max-w-sm space-y-5 mb-10">
-            <label class="flex items-center p-3 bg-white/5 rounded-lg border border-white/10 active:bg-white/10 transition-colors cursor-pointer">
-                <input type="checkbox" class="category-checkbox mr-4" value="love">
-                <span class="text-xl">Romántico ❤️</span>
+        <div class="w-full max-w-sm space-y-3 mb-12">
+            <label class="flex items-center justify-between p-4 glass-panel border-none">
+                <span class="text-lg">Romántico ❤️</span>
+                <input type="checkbox" class="category-checkbox" value="love">
             </label>
-            <label class="flex items-center p-3 bg-white/5 rounded-lg border border-white/10 active:bg-white/10 transition-colors cursor-pointer">
-                <input type="checkbox" class="category-checkbox mr-4" value="sexual">
-                <span class="text-xl">Sexual 🔥</span>
+            <label class="flex items-center justify-between p-4 glass-panel border-none">
+                <span class="text-lg">Sexual 🔥</span>
+                <input type="checkbox" class="category-checkbox" value="sexual">
             </label>
-            <label class="flex items-center p-3 bg-white/5 rounded-lg border border-white/10 active:bg-white/10 transition-colors cursor-pointer">
-                <input type="checkbox" class="category-checkbox mr-4" value="funny">
-                <span class="text-xl">Divertido 🤪</span>
+            <label class="flex items-center justify-between p-4 glass-panel border-none">
+                <span class="text-lg">Divertido 🤪</span>
+                <input type="checkbox" class="category-checkbox" value="funny">
             </label>
-            <label class="flex items-center p-3 bg-white/5 rounded-lg border border-white/10 active:bg-white/10 transition-colors cursor-pointer">
-                <input type="checkbox" class="category-checkbox mr-4" value="intense">
-                <span class="text-xl">Intenso 🤯</span>
+            <label class="flex items-center justify-between p-4 glass-panel border-none">
+                <span class="text-lg">Intenso 🤯</span>
+                <input type="checkbox" class="category-checkbox" value="intense">
             </label>
             
-            <div class="h-px bg-white/20 my-2"></div>
+            <div class="h-px bg-white/10 my-4"></div>
 
-            <label class="flex items-center p-3 bg-gradient-to-r from-purple-900/50 to-blue-900/50 rounded-lg border border-white/20 cursor-pointer">
-                <input type="checkbox" id="select-all" class="category-checkbox mr-4" value="all">
-                <span class="text-lg font-bold">¡Vamos a por todas! 🎉</span>
+            <label class="flex items-center justify-between p-4 glass-panel border-white/20">
+                <span class="font-bold">¡A por todas! 🎉</span>
+                <input type="checkbox" id="select-all" class="category-checkbox" value="all">
             </label>
         </div>
 
-        <button id="apply-categories" class="w-full max-w-sm btn-gradient text-white font-bold py-4 px-6 rounded-xl shadow-lg text-lg uppercase tracking-wider">
-            Continuar
-        </button>
+        <button id="apply-categories" class="w-full max-w-sm btn-primary py-4 rounded-2xl uppercase tracking-widest text-sm">Continuar</button>
     </div>
 
     <!-- PANTALLA 4: JUEGO -->
-    <div id="game-screen" class="hidden fixed inset-0 flex flex-col items-center py-6 px-4 z-20 overflow-y-auto pb-16">
-        <img src="logoblanco.png" alt="Logotipo" class="w-28 mb-4 mt-2 opacity-90">
+    <div id="game-screen" class="hidden fixed inset-0 flex flex-col items-center py-10 px-6 z-20">
+        <img src="logoblanco.png" alt="Logotipo" class="w-20 mb-6 opacity-40">
         
-        <div id="question-card" class="question-box w-full max-w-md p-6 mb-6 relative group">
-            <div class="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-10 rounded-[1.5rem] transition-opacity pointer-events-none"></div>
-            <div id="turn-display" class="hidden text-sm font-bold uppercase tracking-widest text-white/90 mb-4 bg-black/30 px-4 py-1.5 rounded-full backdrop-blur-md shadow-lg border border-white/10">
-                Le toca a: <span id="current-player-name" class="text-yellow-300 ml-1"></span>
+        <div id="question-card" class="glass-panel w-full max-w-md p-8 flex flex-col items-center justify-center min-h-[45vh] text-center relative transition-all duration-700">
+            <div id="turn-display" class="hidden mb-6 px-4 py-1 rounded-full bg-black/40 text-[10px] uppercase tracking-widest border border-white/10 backdrop-blur-md">
+                Le toca a: <span id="current-player-name" class="text-yellow-400 font-bold ml-1"></span>
             </div>
-            <div id="emoji" class="text-6xl mb-4 animate-bounce drop-shadow-lg">✨</div>
-            <p id="question" class="text-white text-2xl md:text-3xl font-caveat leading-snug text-center mb-8 px-2 min-h-[5rem] flex items-center justify-center drop-shadow-md">
+            
+            <div id="emoji" class="text-6xl mb-6 transition-all duration-500">✨</div>
+            
+            <p id="question" class="text-2xl font-caveat leading-relaxed mb-10 px-2 min-h-[6rem] flex items-center justify-center">
                 ¡Clica en «Déjate llevar» para comenzar la experiencia!
             </p>
+
             <div class="flex flex-col w-full gap-3">
-                <button id="new-question" class="w-full bg-white text-purple-900 font-bold py-3 px-8 rounded-xl shadow-lg hover:bg-gray-100 active:scale-95 transition-all text-lg">
-                    Déjate llevar
-                </button>
+                <button id="new-question" class="w-full btn-primary py-4 rounded-2xl uppercase tracking-widest text-sm">Déjate llevar</button>
                 <div class="flex gap-3">
-                    <button id="skip-question" class="flex-1 bg-white/20 hover:bg-white/30 text-white text-sm font-bold py-3 px-4 rounded-xl backdrop-blur-sm border border-white/20 transition-all active:scale-95 hidden">
-                        Saltar pregunta
-                    </button>
-                    <button id="pause-game" class="flex-1 bg-white/20 hover:bg-white/30 text-white text-sm font-bold py-3 px-4 rounded-xl backdrop-blur-sm border border-white/20 transition-all active:scale-95 hidden">
-                        Cuéntame más
-                    </button>
+                    <button id="skip-question" class="hidden flex-1 btn-liquid py-3 rounded-xl text-[10px] uppercase tracking-widest">Saltar</button>
+                    <button id="pause-game" class="hidden flex-1 btn-liquid py-3 rounded-xl text-[10px] uppercase tracking-widest text-white/50">Pausa</button>
                 </div>
             </div>
         </div>
         
-        <div class="w-full max-w-md bg-white/5 rounded-2xl p-4 border border-white/10 backdrop-blur-sm mb-8">
-            <h3 class="text-center text-xs uppercase tracking-widest opacity-50 mb-4">Puntuaciones</h3>
-            <div id="player-scores" class="space-y-4"></div>
+        <div class="w-full max-w-md mt-6 overflow-y-auto no-scrollbar pb-10 flex-1">
+            <h3 class="text-center text-[10px] uppercase tracking-[0.3em] opacity-30 mb-4 font-bold">Puntuaciones</h3>
+            <div id="player-scores" class="space-y-2"></div>
         </div>
     </div>
 
-    <!-- MODAL DE ERROR (INPUTS VACÍOS) -->
-    <div id="error-modal" class="hidden fixed inset-0 z-[60] flex items-center justify-center glass-overlay px-6">
-        <div class="bg-white rounded-3xl p-8 max-w-xs w-full text-black shadow-2xl animate-zoom-in">
-            <div class="text-4xl mb-4 text-center">🧐</div>
-            <h2 class="text-2xl font-bold text-center mb-2">¡Nombres vacíos!</h2>
-            <p class="text-center text-gray-600 mb-6">Parece que hay campos sin rellenar. ¿Qué quieres hacer?</p>
+    <!-- MODAL VICTORIA -->
+    <div id="win-screen" class="hidden fixed inset-0 z-[120] flex items-center justify-center bg-black/90 backdrop-blur-xl px-6">
+        <div class="glass-panel p-10 max-w-sm w-full text-center border-yellow-500/30 win-animate">
+            <div class="text-7xl mb-6">🏆</div>
+            <h2 class="text-3xl font-caveat mb-2">¡Tenemos ganador/a!</h2>
+            <p id="winner-name" class="text-2xl font-bold text-yellow-400 mb-4 uppercase tracking-widest"></p>
+            <p class="text-white/60 text-sm mb-8">Has alcanzado el máximo nivel de conexión. ¡Es hora de celebrarlo!</p>
+            <button onclick="location.reload()" class="w-full btn-primary py-4 rounded-2xl uppercase text-xs tracking-widest">Jugar de nuevo</button>
+        </div>
+    </div>
+
+    <!-- MODAL ERROR -->
+    <div id="error-modal" class="hidden fixed inset-0 z-[110] flex items-center justify-center bg-black/80 backdrop-blur-md px-6">
+        <div class="glass-panel p-8 max-w-xs w-full text-center border-white/20">
+            <div class="text-5xl mb-4">🧐</div>
+            <h2 class="text-xl font-bold mb-2">¡Nombres vacíos!</h2>
+            <p class="text-white/60 text-sm mb-8">Parece que hay campos sin rellenar.</p>
             <div class="flex flex-col gap-3">
-                <button id="clean-start" class="w-full bg-purple-600 text-white font-bold py-3 rounded-xl">Eliminar vacíos y empezar</button>
-                <button id="close-error" class="w-full bg-gray-100 text-gray-800 font-bold py-3 rounded-xl">Volver y rellenar</button>
+                <button id="clean-start" class="w-full btn-primary py-3 rounded-xl text-xs uppercase">Limpiar y empezar</button>
+                <button id="close-error" class="w-full btn-liquid py-3 rounded-xl text-xs uppercase">Rellenar</button>
             </div>
         </div>
     </div>
 
     <!-- PANTALLA PAUSA -->
-    <div id="pause-screen" class="hidden fixed inset-0 z-50 flex flex-col items-center justify-center glass-overlay px-6 animate-zoom-in">
-        <h2 class="text-4xl font-caveat text-white mb-4 text-center">¡Momento Storytime! 🤫</h2>
-        <p class="text-center text-gray-300 mb-8 max-w-xs font-comfortaa">El juego está en pausa. Escuchad con atención, que aquí hay salseo...</p>
-        <button id="resume-game" class="btn-gradient text-white font-bold py-3 px-10 rounded-full shadow-lg text-lg uppercase tracking-wider animate-pulse">Reanudar Juego</button>
+    <div id="pause-screen" class="hidden fixed inset-0 z-[100] flex flex-col items-center justify-center bg-black/60 backdrop-blur-2xl px-8">
+        <h2 class="text-5xl font-caveat mb-4">¡Storytime! 🤫</h2>
+        <p class="text-center text-white/50 mb-10 max-w-xs text-sm">Escuchad con atención antes de seguir...</p>
+        <button id="resume-game" class="btn-primary px-12 py-4 rounded-full uppercase tracking-widest text-xs">Reanudar</button>
     </div>
 
-    <div class="fixed bottom-0 left-0 w-full text-center py-2 bg-black/80 backdrop-blur-md text-white/40 text-[10px] uppercase tracking-widest border-t border-white/5 z-50 pointer-events-none font-comfortaa">
-        Propiedad de Kevin Roldán y Judith Sancerni
+    <div class="fixed bottom-0 left-0 w-full text-center py-2 bg-black/40 backdrop-blur-md text-white/10 text-[7px] uppercase tracking-[0.4em] z-50 pointer-events-none">
+        Kevin Roldán & Judith Sancerni
     </div>
 
     <script>
@@ -249,51 +271,22 @@
             { text: "¿Qué parte de tu cuerpo consideras más atractiva?", emoji: "🔥", category: "sexual" },
             { text: "Si fueras rico/a, ¿qué harías con tu fortuna?", emoji: "🤪", category: "funny" },
             { text: "Si pudieras tener cualquier superpoder, ¿cuál escogerías?", emoji: "🤪", category: "funny" },
-            { text: "Si pudieras teletransportarte, ¿a dónde irías?", emoji: "🤪", category: "funny" },
             { text: "¿Cuál es tu mayor miedo y por qué?", emoji: "🤯", category: "intense" },
             { text: "¿Cómo te gustaría morir?", emoji: "🤯", category: "intense" },
             { text: "¿Cuál consideras que es el sentido de la vida?", emoji: "🤯", category: "intense" },
             { text: "¿Qué es lo más fuerte que has hecho por amor?", emoji: "❤️", category: "love" },
-            { text: "¿Qué significa para ti ser una persona romántica?", emoji: "❤️", category: "love" },
-            { text: "¿Cómo sería tu cita perfecta?", emoji: "❤️", category: "love" },
-            { text: "¿Qué piensas sobre el concepto de amor eterno?", emoji: "❤️", category: "love" },
-            { text: "¿Te gustaría tener una relación a larga distancia? ¿Por qué?", emoji: "❤️", category: "love" },
-            { text: "¿Cuál es tu mayor temor en una relación?", emoji: "❤️", category: "love" },
-            { text: "¿Qué valoras más en una pareja?", emoji: "❤️", category: "love" },
             { text: "¿Cuál es tu fantasía sexual más secreta?", emoji: "🔥", category: "sexual" },
-            { text: "¿Cómo describirías la química perfecta entre dos personas?", emoji: "🔥", category: "sexual" },
-            { text: "¿Qué opinas sobre el sexo sin compromiso?", emoji: "🔥", category: "sexual" },
-            { text: "¿Cuál es tu juguete sexual favorito?", emoji: "🔥", category: "sexual" },
-            { text: "¿Te gustaría probar cosas nuevas en la intimidad? ¿Qué tipo?", emoji: "🔥", category: "sexual" },
-            { text: "¿Te consideras un buen amante? ¿Por qué?", emoji: "🔥", category: "sexual" },
-            { text: "¿Qué harías si te tocaran un tema sexual incómodo?", emoji: "🔥", category: "sexual" },
-            { text: "Si fueras un superhéroe, ¿cuál sería tu poder?", emoji: "🤪", category: "funny" },
-            { text: "¿Cuál es el peor chiste que conoces?", emoji: "🤪", category: "funny" },
-            { text: "Si pudieras ser cualquier animal por un día, ¿cuál serías?", emoji: "🤪", category: "funny" },
-            { text: "¿Qué harías si pudieras hablar con los animales?", emoji: "🤪", category: "funny" },
-            { text: "¿Qué harías si fueras un niño otra vez por un día?", emoji: "🤪", category: "funny" },
-            { text: "¿Te has reído alguna vez en una situación inapropiada?", emoji: "🤪", category: "funny" },
-            { text: "Si pudieras ser famoso por algo ridículo, ¿qué harías?", emoji: "🤪", category: "funny" },
-            { text: "¿Cuál es tu imitación de voz más graciosa?", emoji: "🤪", category: "funny" },
-            { text: "Si fueras un personaje de dibujos animados, ¿quién serías?", emoji: "🤪", category: "funny" },
-            { text: "¿Qué opinas sobre el destino? ¿Crees que todo pasa por una razón?", emoji: "🤯", category: "intense" },
-            { text: "¿Qué harías si supieras que te queda solo un día de vida?", emoji: "🤯", category: "intense" },
-            { text: "¿Te gustaría saber cuándo vas a morir?", emoji: "🤯", category: "intense" },
-            { text: "¿Qué opinas sobre el concepto de libertad?", emoji: "🤯", category: "intense" },
-            { text: "¿Cuál es el mayor sacrificio que has hecho en tu vida?", emoji: "🤯", category: "intense" },
-            { text: "¿Crees que hay vida después de la muerte?", emoji: "🤯", category: "intense" },
-            { text: "¿Qué harías si tuvieras el poder de cambiar el mundo?", emoji: "🤯", category: "intense" },
-            { text: "¿Qué significa para ti la libertad?", emoji: "🤯", category: "intense" },
-            { text: "¿Qué es lo más alocado que has hecho?", emoji: "🤪", category: "funny" },
-            { text: "¿A qué le tienes un miedo irracional?", emoji: "🤯", category: "intense" },
+            { text: "Si fueras un animal, ¿cuál serías?", emoji: "🤪", category: "funny" },
+            { text: "¿Qué opinas sobre el destino?", emoji: "🤯", category: "intense" },
             { text: "¿Cómo te sentirías si pillaras a tu pareja dándose autoplacer?", emoji: "🔥", category: "sexual" }
         ];
 
         document.addEventListener("DOMContentLoaded", () => {
             let players = [];
-            const maxScore = 100;
-            const usedQuestions = new Set();
             let filteredQuestions = [];
+            let currentPlayerIndex = 0;
+            const usedQuestions = new Set();
+            const maxScore = 100;
 
             const screens = {
                 splash: document.getElementById("splash-screen"),
@@ -301,69 +294,50 @@
                 categorySetup: document.getElementById("category-setup"),
                 game: document.getElementById("game-screen"),
                 pause: document.getElementById("pause-screen"),
-                errorModal: document.getElementById("error-modal")
+                errorModal: document.getElementById("error-modal"),
+                win: document.getElementById("win-screen")
             };
 
             const ui = {
-                questionCard: document.getElementById("question-card"),
-                skipBtn: document.getElementById("skip-question"),
-                pauseBtn: document.getElementById("pause-game"),
-                turnDisplay: document.getElementById("turn-display"),
-                currentPlayerName: document.getElementById("current-player-name"),
                 qText: document.getElementById("question"),
                 emoji: document.getElementById("emoji"),
+                playerName: document.getElementById("current-player-name"),
+                turnBox: document.getElementById("turn-display"),
+                winnerName: document.getElementById("winner-name")
             };
 
-            function showScreen(screenKey) {
-                if(!['pause', 'errorModal'].includes(screenKey)) {
-                    Object.keys(screens).forEach(k => {
-                        if(!['pause', 'errorModal'].includes(k)) screens[k].classList.add("hidden");
-                    });
-                }
-                screens[screenKey].classList.remove("hidden");
-                if(!['pause', 'errorModal'].includes(screenKey)) screens[screenKey].classList.add("animate-zoom-in");
+            function showScreen(key) {
+                Object.keys(screens).forEach(k => screens[k].classList.add("hidden"));
+                screens[key].classList.remove("hidden");
             }
 
             setTimeout(() => {
-                screens.splash.classList.add("opacity-0");
-                setTimeout(() => {
-                    screens.splash.classList.add("hidden");
-                    showScreen("playerSetup");
-                }, 500);
+                screens.splash.style.opacity = '0';
+                setTimeout(() => showScreen("playerSetup"), 1000);
             }, 1500);
 
-            const playerInputsContainer = document.getElementById("player-inputs");
-            let playerCount = 2;
-
             document.getElementById("add-player").addEventListener("click", () => {
-                if (playerCount < 12) {
-                    playerCount++;
-                    const newInput = document.createElement("input");
-                    newInput.type = "text";
-                    newInput.className = "player-name w-full bg-white/90 text-black px-4 py-3 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500 animate-zoom-in";
-                    newInput.placeholder = `Nombre ${playerCount}`;
-                    playerInputsContainer.appendChild(newInput);
-                    newInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                const inputs = document.getElementById("player-inputs");
+                if (inputs.children.length < 12) {
+                    const i = document.createElement("input");
+                    i.type = "text";
+                    i.className = "player-name w-full px-5 py-4 outline-none";
+                    i.placeholder = `Nombre ${inputs.children.length + 1}`;
+                    inputs.appendChild(i);
+                    i.scrollIntoView({ behavior: 'smooth' });
                 }
             });
 
             function validateAndStart(autoClean = false) {
                 const inputs = Array.from(document.querySelectorAll(".player-name"));
-                const filledPlayers = inputs.map(i => i.value.trim()).filter(val => val !== "");
+                const filled = inputs.map(i => i.value.trim()).filter(v => v !== "");
                 
-                if (filledPlayers.length === 0) {
-                    // Si no hay ninguno, forzamos a rellenar al menos uno
-                    screens.errorModal.classList.add("hidden");
-                    return; 
-                }
-
-                if (filledPlayers.length < inputs.length && !autoClean) {
-                    showScreen("errorModal");
+                if (filled.length < 2 && !autoClean) {
+                    screens.errorModal.classList.remove("hidden");
                     return;
                 }
 
-                // Si llegamos aquí o autoClean es true
-                players = filledPlayers.map(name => ({ name, score: 0 }));
+                players = (autoClean ? filled : filled).map(name => ({ name, score: 0 }));
                 screens.errorModal.classList.add("hidden");
                 showScreen("categorySetup");
             }
@@ -379,11 +353,10 @@
             });
 
             document.getElementById("apply-categories").addEventListener("click", () => {
-                const selected = Array.from(document.querySelectorAll(".category-checkbox:checked")).map(cb => cb.value);
+                const selected = Array.from(document.querySelectorAll(".category-checkbox:checked")).map(c => c.value);
                 if (selected.length === 0) return;
                 
                 filteredQuestions = selected.includes('all') ? [...questions] : questions.filter(q => selected.includes(q.category));
-                usedQuestions.clear();
                 updateScores();
                 showScreen("game");
             });
@@ -396,74 +369,77 @@
                 return q;
             }
 
-            function updateCardTheme(category) {
-                ui.questionCard.classList.remove('theme-love', 'theme-sexual', 'theme-funny', 'theme-intense');
-                if (category) ui.questionCard.classList.add(`theme-${category}`);
-            }
-
-            function renderQuestion(qData, playerName = null) {
+            function renderQuestion(q) {
                 ui.qText.style.opacity = 0;
                 ui.emoji.style.opacity = 0;
                 setTimeout(() => {
-                    ui.qText.textContent = qData.text;
-                    ui.emoji.textContent = qData.emoji;
-                    updateCardTheme(qData.category);
-                    if (playerName) {
-                        ui.currentPlayerName.textContent = playerName;
-                        ui.turnDisplay.classList.remove("hidden");
-                    }
+                    ui.qText.textContent = q.text;
+                    ui.emoji.textContent = q.emoji;
+                    document.body.className = `theme-${q.category}`;
                     ui.qText.style.opacity = 1;
                     ui.emoji.style.opacity = 1;
-                }, 200);
+                }, 300);
             }
 
+            // Lógica: Siguiente jugador SIEMPRE al clicar "Déjate llevar"
             document.getElementById("new-question").addEventListener("click", () => {
-                renderQuestion(getNextQuestion(), players[Math.floor(Math.random() * players.length)].name);
-                ui.skipBtn.classList.remove("hidden");
-                ui.pauseBtn.classList.remove("hidden");
+                const q = getNextQuestion();
+                
+                // Rotar jugador secuencialmente
+                const p = players[currentPlayerIndex];
+                currentPlayerIndex = (currentPlayerIndex + 1) % players.length;
+                
+                renderQuestion(q);
+                ui.playerName.textContent = p.name;
+                ui.turnBox.classList.remove("hidden");
+                document.getElementById("skip-question").classList.remove("hidden");
+                document.getElementById("pause-game").classList.remove("hidden");
             });
 
-            ui.skipBtn.addEventListener("click", () => renderQuestion(getNextQuestion()));
-            ui.pauseBtn.addEventListener("click", () => showScreen("pause"));
+            document.getElementById("skip-question").addEventListener("click", () => renderQuestion(getNextQuestion()));
+            document.getElementById("pause-game").addEventListener("click", () => screens.pause.classList.remove("hidden"));
             document.getElementById("resume-game").addEventListener("click", () => screens.pause.classList.add("hidden"));
 
-            window.modifyScore = function(index, amount, btnElement) {
-                if (amount > 0 && btnElement) showFloatingPoints(btnElement);
-                const newScore = players[index].score + amount;
-                if (newScore >= 0) {
-                    players[index].score = newScore;
-                    updateScores();
+            window.modifyScore = function(index, amount, btn) {
+                if (amount > 0) {
+                    const rect = btn.getBoundingClientRect();
+                    const float = document.createElement("div");
+                    float.textContent = "+10";
+                    float.className = "floating-points";
+                    float.style.left = `${rect.left}px`;
+                    float.style.top = `${rect.top}px`;
+                    document.body.appendChild(float);
+                    setTimeout(() => float.remove(), 800);
+                }
+                
+                players[index].score = Math.max(0, players[index].score + amount);
+                updateScores();
+
+                // Verificar Victoria
+                if (players[index].score >= maxScore) {
+                    ui.winnerName.textContent = players[index].name;
+                    showScreen("win");
                 }
             };
-
-            function showFloatingPoints(targetBtn) {
-                const rect = targetBtn.getBoundingClientRect();
-                const floatEl = document.createElement("div");
-                floatEl.textContent = "+10";
-                floatEl.className = "floating-points";
-                floatEl.style.left = `${rect.left}px`;
-                floatEl.style.top = `${rect.top}px`;
-                document.body.appendChild(floatEl);
-                setTimeout(() => floatEl.remove(), 800);
-            }
 
             function updateScores() {
                 const container = document.getElementById("player-scores");
                 container.innerHTML = "";
-                players.forEach((player, index) => {
+                players.forEach((p, i) => {
                     const row = document.createElement("div");
-                    row.className = "bg-white/10 rounded-lg p-3";
+                    row.className = "glass-panel p-3 border-none flex flex-col gap-2";
                     row.innerHTML = `
-                        <div class="flex items-center justify-between mb-2">
-                            <span class="font-bold text-white truncate max-w-[50%]">${player.name}</span>
-                            <div class="flex space-x-2">
-                                <button onclick="modifyScore(${index}, -10, this)" class="bg-red-500/20 hover:bg-red-500 text-red-100 px-3 py-1 rounded text-sm font-bold">-</button>
-                                <button onclick="modifyScore(${index}, 10, this)" class="bg-green-500/20 hover:bg-green-500 text-green-100 px-3 py-1 rounded text-sm font-bold">+</button>
+                        <div class="flex items-center justify-between">
+                            <span class="font-bold text-[10px] truncate max-w-[50%] opacity-60 uppercase tracking-widest">${p.name}</span>
+                            <div class="flex gap-2">
+                                <button onclick="modifyScore(${i}, -10, this)" class="w-7 h-7 rounded-lg bg-red-500/10 text-red-400 font-bold">-</button>
+                                <button onclick="modifyScore(${i}, 10, this)" class="w-7 h-7 rounded-lg bg-green-500/10 text-green-400 font-bold">+</button>
                             </div>
                         </div>
-                        <div class="w-full bg-gray-700/50 rounded-full h-3 overflow-hidden">
-                            <div class="bg-gradient-to-r from-blue-500 to-purple-500 h-full rounded-full transition-all duration-500" style="width: ${(player.score / maxScore) * 100}%"></div>
-                        </div>`;
+                        <div class="w-full bg-white/5 h-1 rounded-full overflow-hidden">
+                            <div class="bg-white/30 h-full transition-all duration-700" style="width: ${(p.score / maxScore) * 100}%"></div>
+                        </div>
+                    `;
                     container.appendChild(row);
                 });
             }
@@ -471,4 +447,3 @@
     </script>
 </body>
 </html>
-
