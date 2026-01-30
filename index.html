@@ -139,13 +139,13 @@
 
     <!-- PANTALLA 1: SPLASH SCREEN -->
     <div id="splash-screen" class="fixed inset-0 flex items-center justify-center bg-black z-[100] transition-opacity duration-1000">
-        <img src="logo.png" alt="Logotipo" class="w-2/3 max-w-xs animate-pulse">
+        <img src="logoblanco.png" alt="Logotipo" class="w-2/3 max-w-xs animate-pulse">
     </div>
 
     <!-- PANTALLA 2: SELECCIÓN DE JUGADORES -->
     <div id="player-setup" class="hidden fixed inset-0 flex flex-col items-center pt-12 px-6 z-40">
         <!-- Logo del meet en color -->
-        <img src="logo.png" alt="Logo" class="logo w-24 mb-6">
+        <img src="logoblanco.png" alt="Logo" class="logo w-24 mb-6">
         
         <h1 class="text-5xl mb-8 font-caveat text-center leading-tight">¿Quiénes vais a<br>dejaros llevar?</h1>
         
@@ -205,7 +205,7 @@
         
         <div id="question-card" class="glass-panel w-full max-w-md p-8 flex flex-col items-center justify-center min-h-[45vh] text-center relative transition-all duration-700">
             <div id="turn-display" class="hidden mb-6 px-4 py-1 rounded-full bg-black/40 text-[10px] uppercase tracking-widest border border-white/10 backdrop-blur-md">
-                Turno de: <span id="current-player-name" class="text-[#9a18a4] font-bold ml-1"></span>
+                Turno de: <span id="current-player-name" class="text-[#E0B0FF] font-bold ml-1"></span>
             </div>
             
             <div id="emoji" class="text-6xl mb-6 transition-all duration-500">✨</div>
@@ -217,8 +217,8 @@
             <div class="flex flex-col w-full gap-3">
                 <button id="new-question" class="w-full btn-primary py-4 rounded-2xl uppercase tracking-widest text-sm">Déjate llevar</button>
                 <div class="flex gap-3">
-                    <button id="skip-question" class="hidden flex-1 btn-liquid py-3 rounded-xl text-[10px] uppercase tracking-widest">Saltar</button>
-                    <button id="pause-game" class="hidden flex-1 btn-liquid py-3 rounded-xl text-[10px] uppercase tracking-widest">Pausa</button>
+                    <button id="skip-question" class="hidden flex-1 btn-liquid py-3 rounded-xl text-[10px] uppercase tracking-widest">Saltar pregunta</button>
+                    <button id="pause-game" class="hidden flex-1 btn-liquid py-3 rounded-xl text-[10px] uppercase tracking-widest">Cuéntame más</button>
                 </div>
             </div>
         </div>
@@ -231,10 +231,10 @@
 
     <!-- MODAL VICTORIA -->
     <div id="win-screen" class="hidden fixed inset-0 z-[120] flex items-center justify-center bg-black/90 backdrop-blur-xl px-6">
-        <div class="glass-panel p-10 max-w-sm w-full text-center border-yellow-500/30 win-animate">
-            <div class="text-7xl mb-6">🏆</div>
-            <h2 class="text-3xl font-caveat mb-2">¡Tenemos ganador/a!</h2>
-            <p id="winner-name" class="text-2xl font-bold text-yellow-400 mb-4 uppercase tracking-widest"></p>
+        <div class="glass-panel p-10 max-w-sm w-full text-center border-[#E0B0FF]/30 win-animate">
+            <div class="text-7xl mb-6">💜</div>
+            <h2 class="text-3xl font-caveat mb-2">¡FELICIDADES!</h2>
+            <p id="winner-name" class="text-2xl font-bold text-[#E0B0FF] mb-4 uppercase tracking-widest"></p>
             <p class="text-white/60 text-sm mb-8">Has alcanzado el máximo nivel de conexión. ¡Es hora de celebrarlo!</p>
             <button onclick="location.reload()" class="w-full btn-primary py-4 rounded-2xl uppercase text-xs tracking-widest">Jugar de nuevo</button>
         </div>
@@ -260,7 +260,7 @@
         <button id="resume-game" class="btn-primary px-12 py-4 rounded-full uppercase tracking-widest text-xs">Reanudar</button>
     </div>
 
-    <div class="fixed bottom-0 left-0 w-full text-center py-2 bg-black/40 backdrop-blur-md text-white/10 text-[7px] uppercase tracking-[0.4em] z-50 pointer-events-none">
+    <div class="fixed bottom-0 left-0 w-full text-center py-2 bg-black/40 backdrop-blur-md text-white/40 text-[7px] uppercase tracking-[0.4em] z-50 pointer-events-none">
         Kevin Roldán & Judith Sancerni
     </div>
 
@@ -600,3 +600,4 @@
     </script>
 </body>
 </html>
+
